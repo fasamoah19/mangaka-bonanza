@@ -1,6 +1,7 @@
 import { Manga } from "@/lib/types";
 import GenreTag from "./GenreTag";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 /** Necessary props for this component */
 type SpotlightOfTheWeekHeroProps = {
@@ -22,11 +23,14 @@ export default function SpotlightOfTheWeekHero({
         Spotlight of the Week
       </div>
       <motion.div layout className="flex gap-12">
-        <img
+        <Image
           src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
             manga.attributes?.image.data.attributes?.url
           }`}
-          className="w-72 h-420px shadow-md"
+          className="shadow-md"
+          height={420}
+          width={280}
+          alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
         />
         <div className="align-top space-y-4 md:space-y-6">
           {/** Manga Name */}
