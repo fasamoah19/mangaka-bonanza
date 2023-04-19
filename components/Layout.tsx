@@ -14,8 +14,8 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <>
+      <Header />
       <div className="pb-12 px-8">
-        <Header />
         <Banner />
         <main className="relative">{children}</main>
       </div>
@@ -24,6 +24,7 @@ export default function Layout({ children }: LayoutProps) {
   );
 }
 
+/** Component that displays the banner of kid goku underneath the header */
 const Banner = () => {
   return (
     <div className="flex py-3">

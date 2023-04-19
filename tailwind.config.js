@@ -25,7 +25,8 @@ module.exports = {
         siteGray: "#787878",
         siteLightGray: "#D9D9D9",
         siteRed: "#D21416",
-        'mangaCard': 'rgba(217, 217, 217, 0.21)'
+        mangaCard: 'rgba(217, 217, 217, 0.21)',
+        siteBlue: "#A6E1FA",
       }
     }
   },

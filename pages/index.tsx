@@ -1,28 +1,9 @@
-import { Libre_Franklin } from "next/font/google";
 import { InferGetServerSidePropsType } from "next";
 import { Manga } from "@/lib/types";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Divider,
-  Flex,
-  HStack,
-  Image,
-  Spacer,
-  Tag,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
 import { useState } from "react";
 import SpotlightOfTheWeekHero from "@/components/SpotlightOfTheWeekHero";
 import SectionDivider from "@/components/Divider";
 import MangaItem from "@/components/MangaItem";
-
-const libreFranklin = Libre_Franklin({
-  subsets: ["latin"],
-  weight: "variable",
-});
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
