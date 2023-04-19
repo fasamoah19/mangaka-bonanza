@@ -12,37 +12,41 @@ const anton = Anton({ subsets: ["latin"], weight: "400" });
  */
 export default function Header() {
   return (
-    <header className="flex sticky z-50 top-0 bg-white py-4">
-      <Link href="/">
-        <h3 className="text-3xl font-anton font-bold">Mangaka Bonanza</h3>
-      </Link>
-      <div className="grow"></div> {/** Spacer */}
-      <nav className="flex space-x-4 align-middle">
-        <ul className="flex flex-col md:flex-row space-x-4">
-          <li>
-            <a href="#" className="text-sm">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-sm">
-              Genres
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-sm">
-              Cart
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-sm">
-              About
-            </a>
-          </li>
-        </ul>
+    <header className="sticky z-50 top-0 bg-white py-4 shadow-sm">
+      <div className="flex flex-row px-8">
+        <div className="flex">
+          <Link href="/">
+            <h3 className="text-3xl font-anton font-bold">Mangaka Bonanza</h3>
+          </Link>
+        </div>
+        <div className="grow"></div> {/** Spacer */}
+        <nav className="flex space-x-4 align-middle">
+          <ul className="flex flex-col md:flex-row space-x-6">
+            <li>
+              <a href="/" className="text-sm">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-sm">
+                Genres
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-sm">
+                Cart
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-sm">
+                About
+              </a>
+            </li>
+          </ul>
 
-        <UserIcon />
-      </nav>
+          <UserIcon />
+        </nav>
+      </div>
     </header>
   );
 }

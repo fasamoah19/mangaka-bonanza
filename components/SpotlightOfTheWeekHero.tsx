@@ -2,6 +2,7 @@ import { Manga } from "@/lib/types";
 import GenreTag from "./GenreTag";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 /** Necessary props for this component */
 type SpotlightOfTheWeekHeroProps = {
@@ -23,15 +24,18 @@ export default function SpotlightOfTheWeekHero({
         Spotlight of the Week
       </div>
       <motion.div layout className="flex gap-12">
-        <Image
-          src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-            manga.attributes?.image.data.attributes?.url
-          }`}
-          className="shadow-md"
-          height={420}
-          width={280}
-          alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
-        />
+        <Link href={`/mangas/${manga.id}`}>
+          <Image
+            src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
+              manga.attributes?.image.data.attributes?.url
+            }`}
+            className="shadow-md"
+            height={420}
+            width={280}
+            alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
+          />
+        </Link>
+
         <div className="align-top space-y-4 md:space-y-6">
           {/** Manga Name */}
           <div className="font-libreFranklin text-3xl leading-none">
@@ -74,14 +78,16 @@ export default function SpotlightOfTheWeekHero({
               Buy
             </motion.button>
 
-            <motion.button
-              className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
-              whileHover={{
-                scale: 0.9,
-              }}
-            >
-              View More
-            </motion.button>
+            <Link href={`/mangas/${manga.id}`}>
+              <motion.button
+                className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
+                whileHover={{
+                  scale: 0.9,
+                }}
+              >
+                View More
+              </motion.button>
+            </Link>
           </div>
         </div>
       </motion.div>

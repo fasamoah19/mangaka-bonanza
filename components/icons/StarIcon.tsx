@@ -1,17 +1,10 @@
-import { Manga } from "@/lib/types";
-
-/** Props necessary for this component */
-type StarIconProps = {
-  manga: Manga;
-};
-
 /**
  * A component used to display the rating of a manga
  * 
  * @param param0 Manga object
  * @returns StarIcon component
  */
-export default function StarIcon({ manga }: StarIconProps) {
+export default function StarIcon() {
   return (
     <svg
       width="18"
