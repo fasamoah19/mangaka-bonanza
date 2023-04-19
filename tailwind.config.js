@@ -6,13 +6,28 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
+    fontFamily: {
+      'anton': ['Anton', 'sans-serif'],
+      'libreFranklin': ['Libre Franklin', 'sans-serif']
     },
+    extend: {
+      objectPosition: {
+        'center-40-per': 'center 40%',
+      },
+      height: {
+        '112': '28rem' /** 448px */,
+        '420px': '420px'
+      },
+      space: {
+        'auto': 'auto'
+      },
+      colors: {
+        siteGray: "#787878",
+        siteLightGray: "#D9D9D9",
+        siteRed: "#D21416",
+        'mangaCard': 'rgba(217, 217, 217, 0.21)'
+      }
+    }
   },
   plugins: [],
 }
