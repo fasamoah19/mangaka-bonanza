@@ -1,5 +1,6 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
+import MangaGrid from "@/components/MangaGrid";
 import MangaItem from "@/components/MangaItem";
 import ReviewItem from "@/components/ReviewItem";
 import StarIcon from "@/components/icons/StarIcon";
@@ -7,17 +8,35 @@ import { Manga } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import qs from "qs";
 
 /**
  * Helper function that retrieves the manga selected by the user
- * 
+ *
  * @param id Id of the selected manga
  * @returns Manga object
  */
-async function getSelectedManga(id: string) {
+async function getSelectedManga(slug: string) {
+  const query = qs.stringify(
+    {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      populate: {
+        image: true,
+        mangaka: true,
+      },
+    },
+    {
+      encodeValuesOnly: true,
+    }
+  );
+
   const response = await fetch(
-    `${process.env
-      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas/${id}?populate=mangaka,image`,
+    `${process.env.NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas/?${query}`,
     {
       method: "GET",
       headers: {
@@ -27,13 +46,13 @@ async function getSelectedManga(id: string) {
     }
   );
   const selectedMangaObject = await response.json();
-  const selectedManga = selectedMangaObject.data as Manga
+  const selectedManga = selectedMangaObject.data[0] as Manga;
 
-  return selectedManga
+  return selectedManga;
 }
 /**
  * Helper function that retrieves manga titles that are similar in genre
- * 
+ *
  * @param selectedManga Manga object of the selected manga
  * @returns Array of manga objects that are similar in genre
  */
@@ -51,19 +70,24 @@ async function getSimilarTitles(selectedManga: Manga) {
   );
   const mangas = await responseSimilarTitles.json();
 
-  const similarTitles = (mangas.data as Manga[]).filter((manga) =>
-    manga.attributes?.genres.filter(genre => selectedManga.attributes?.genres.includes(genre)).length && selectedManga.attributes?.name !== manga.attributes.name
-  ).slice(0, 8).reverse() as Manga[];
+  const similarTitles = (mangas.data as Manga[])
+    .filter(
+      (manga) =>
+        manga.attributes?.genres.filter((genre) =>
+          selectedManga.attributes?.genres.includes(genre)
+        ).length && selectedManga.attributes?.name !== manga.attributes.name
+    )
+    .slice(0, 8)
+    .reverse() as Manga[];
 
-  return similarTitles
+  return similarTitles;
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const id = context.params?.id;
+  const slug = context.params?.slug;
 
-  const selectedManga = await getSelectedManga(id as string);
-  const similarTitles = await getSimilarTitles(selectedManga)
-
+  const selectedManga = await getSelectedManga(slug as string);
+  const similarTitles = await getSimilarTitles(selectedManga);
 
   return {
     props: {
@@ -75,7 +99,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 /**
  * Selected Manga Page
- * 
+ *
  * @param param0 Manga object and an array of similar manga titles
  * @returns SelectedMangaPage component
  */
@@ -106,10 +130,13 @@ export default function SelectedMangaPage({
             {` ${manga.attributes?.mangaka.data.attributes?.name}`}
           </div>
           {/** Series Name */}
-          <div className="text-xl">
-            <b>Series Name:</b>
-            {` ${manga.attributes?.series_name}`}
-          </div>
+          <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
+            <div className="text-xl">
+              <b>Series Name:</b>
+              {` ${manga.attributes?.series_name}`}
+            </div>
+          </Link>
+
           {/** Release Date */}
           <div className="text-xl">
             <b>Release Date:</b>
@@ -178,7 +205,7 @@ export default function SelectedMangaPage({
         <div className="flex flex-row place-content-center text-4xl text-siteRed pb-11">
           Reviews
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-8 md:gap-x-8 lg:gap-x-14">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
           {Array.from(Array(4).keys()).map((key) => (
             <div key={key}>
               <ReviewItem
@@ -193,21 +220,14 @@ export default function SelectedMangaPage({
       </section>
 
       <SectionDivider />
-      
+
       {/** Similar Titles Section */}
       {similarTitles.length > 0 ? (
-        <section className="flex flex-col">
-          <div className="flex flex-row place-content-center text-4xl text-siteGray pb-11">
-            Similar Titles
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-8 md:gap-x-8 lg:gap-x-14">
-            {similarTitles.map((manga) => (
-              <div key={manga.attributes?.name}>
-                <MangaItem manga={manga} />
-              </div>
-            ))}
-          </div>
-        </section>
+        <MangaGrid
+          gridTitle="Similar Titles"
+          mangas={similarTitles}
+          titleColor={"text-SiteGray"}
+        />
       ) : (
         <></>
       )}

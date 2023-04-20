@@ -23,9 +23,7 @@ export default function Header() {
         <nav className="flex space-x-4 align-middle">
           <ul className="flex flex-col md:flex-row space-x-6">
             <li>
-              <a href="/" className="text-sm">
-                Home
-              </a>
+              <Link className="text-sm" href="/">Home</Link>
             </li>
             <li>
               <a href="#" className="text-sm">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import SpotlightOfTheWeekHero from "@/components/SpotlightOfTheWeekHero";
 import SectionDivider from "@/components/Divider";
 import MangaItem from "@/components/MangaItem";
+import qs from "qs";
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
@@ -11,9 +12,23 @@ import MangaItem from "@/components/MangaItem";
  * @returns Manga data from Strapi
  */
 export async function getServerSideProps() {
+  const query = qs.stringify(
+    {
+      filters: {
+        in_print: {
+          $eq: true,
+        },
+      },
+      populate: ['mangaka', 'image']
+    },
+    {
+      encodeValuesOnly: true,
+    }
+  );
+
   const response = await fetch(
     `${process.env
-      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas?populate=mangaka,image`,
+      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas?${query}`,
     {
       method: "GET",
       headers: {
@@ -93,7 +108,7 @@ export default function Home({
         </div>
 
         {/** List of Manga */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-8 md:gap-x-8 lg:gap-x-14">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
           {/** Manga Item */}
           {mangas
             .filter((manga) => manga.attributes?.in_print == true)

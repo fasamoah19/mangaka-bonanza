@@ -50,3 +50,22 @@ export type Mangaka = {
 export type Review = {
 
 }
+
+export type MangaSeries = {
+  id: number;
+  attributes?: {
+    name: string;
+    mangaka: {
+      data: Mangaka;
+    };
+    summary: string;
+    genres: string[];
+    firstCover: {
+      data: Image
+    };
+    mangas: {
+      data: Manga[]
+    },
+    slug: string
+  }
+}

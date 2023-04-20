@@ -20,7 +20,7 @@ export default function MangaItem({ manga }: MangaItemProps) {
   return (
     <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
       {/** Manga Cover */}
-      <Link href={`/mangas/${manga.id}`}>
+      <Link href={`/mangas/${manga.attributes?.slug}`}>
         {" "}
         {/* TODO: Navigate to selected manga page */}
         <motion.img
