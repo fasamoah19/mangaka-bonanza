@@ -5,7 +5,7 @@ import MangaItem from "./MangaItem";
 type MangaGridProps = {
   mangas: Manga[];
   gridTitle: string;
-  titleColor: "text-SiteGray" | "text-siteRed";
+  titleColor: "text-siteGray" | "text-siteRed";
 };
 
 /**
@@ -17,7 +17,7 @@ type MangaGridProps = {
 export default function MangaGrid({ mangas, gridTitle, titleColor }: MangaGridProps) {
   return (
     <section className="flex flex-col">
-      <div className={`flex flex-row place-content-center text-4xl ${titleColor} pb-11`}>
+      <div className={`flex flex-row place-content-center text-4xl ${titleColor} pb-16`}>
         {gridTitle}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">

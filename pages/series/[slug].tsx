@@ -112,9 +112,9 @@ export default function MangaSeriesPage({
   similarTitles,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-8">
       {/** Manag Series Section */}
-      <section className="flex mt-11 mx-auto flex-col place-items-center">
+      <section className="flex mt-16 mx-auto flex-col place-items-center">
         <div className="flex gap-12">
           <Image
             src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
@@ -135,8 +135,12 @@ export default function MangaSeriesPage({
 
             {/** Author Name */}
             <div className="text-xl">
-              <b>Author:</b>{" "}
-              {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+              <Link
+                href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
+              >
+                <b>Author:</b>{" "}
+                {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+              </Link>
             </div>
 
             {/** Release Date */}
@@ -188,13 +192,21 @@ export default function MangaSeriesPage({
       <SectionDivider />
 
       {/** The series section */}
-      <MangaGrid gridTitle="The Series" mangas={mangas} titleColor={'text-siteRed'} />
+      <MangaGrid
+        gridTitle="The Series"
+        mangas={mangas}
+        titleColor={"text-siteRed"}
+      />
 
       <SectionDivider />
 
       {/** Similar Titles Section */}
       {similarTitles.length > 0 ? (
-        <MangaGrid gridTitle="Similar Titles" mangas={similarTitles} titleColor={'text-SiteGray'} />
+        <MangaGrid
+          gridTitle="Similar Titles"
+          mangas={similarTitles}
+          titleColor={"text-siteGray"}
+        />
       ) : (
         <></>
       )}

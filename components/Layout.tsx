@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <>
       <Header />
-      <div className="pb-12 px-8">
+      <div className="pb-16 px-8">
         <Banner />
         <main className="relative">{children}</main>
       </div>

@@ -41,9 +41,18 @@ export type Mangaka = {
     birth_place: string;
     date_of_birth: string;
     bio: string;
+    firstMangaTitle: string;
+    mostRecentMangaTitle: string;
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
+    slug: string;
+    image: {
+      data: Image
+    };
+    manga: {
+      data: Manga[]
+    }
   }
 }
 

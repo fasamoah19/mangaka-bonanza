@@ -76,7 +76,7 @@ export default function Home({
   ];
   const [highlightFilter, setHighlightFilter] = useState<string>("New");
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-8">
       {/** Spotlight of the Week Hero */}
       <SpotlightOfTheWeekHero manga={spotlightOfTheWeekManga} />
       {/** Spotlight of the Week End */}
