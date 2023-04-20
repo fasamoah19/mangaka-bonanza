@@ -1,7 +1,6 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
-import MangaItem from "@/components/MangaItem";
 import ReviewItem from "@/components/ReviewItem";
 import StarIcon from "@/components/icons/StarIcon";
 import { Manga } from "@/lib/types";
@@ -115,9 +114,9 @@ export default function SelectedMangaPage({
       "Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.",
   };
   return (
-    <div className="flex flex-col pb-8">
+    <div className="flex flex-col">
       {/** Selected Manga Information Section */}
-      <section className="flex flex-row pt-11">
+      <section className="flex flex-row pt-16">
         {/** Manga Information  */}
         <div className="flex flex-col gap-y-7">
           {/** Title */}
@@ -125,10 +124,15 @@ export default function SelectedMangaPage({
             {manga.attributes?.name}
           </div>
           {/** Author */}
-          <div className="text-xl">
-            <b>Author:</b>
-            {` ${manga.attributes?.mangaka.data.attributes?.name}`}
-          </div>
+          <Link
+            href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+          >
+            <div className="text-xl">
+              <b>Author:</b>
+              {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+            </div>
+          </Link>
+
           {/** Series Name */}
           <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
             <div className="text-xl">
@@ -142,6 +146,7 @@ export default function SelectedMangaPage({
             <b>Release Date:</b>
             {` ${manga.attributes?.release_date}`}
           </div>
+
           {/** Rating */}
           <div className="text-xl flex flex-row place-items-center gap-x-2">
             <b>Rating: </b>
@@ -202,7 +207,7 @@ export default function SelectedMangaPage({
 
       {/** Reviews Section */}
       <section className="flex flex-col">
-        <div className="flex flex-row place-content-center text-4xl text-siteRed pb-11">
+        <div className="flex flex-row place-content-center text-4xl text-siteRed pb-1">
           Reviews
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
@@ -226,7 +231,7 @@ export default function SelectedMangaPage({
         <MangaGrid
           gridTitle="Similar Titles"
           mangas={similarTitles}
-          titleColor={"text-SiteGray"}
+          titleColor={"text-siteGray"}
         />
       ) : (
         <></>
