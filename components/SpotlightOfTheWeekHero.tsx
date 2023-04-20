@@ -24,7 +24,7 @@ export default function SpotlightOfTheWeekHero({
         Spotlight of the Week
       </div>
       <motion.div layout className="flex gap-12">
-        <Link href={`/mangas/${manga.id}`}>
+        <Link href={`/mangas/${manga.attributes?.slug}`}>
           <Image
             src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
               manga.attributes?.image.data.attributes?.url
@@ -68,6 +68,7 @@ export default function SpotlightOfTheWeekHero({
             {`${manga.attributes?.summary}`}
           </div>
 
+          {/** Buttons */}
           <div className="flex flex-row space-x-5 pt-0.5">
             <motion.button
               className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
@@ -78,7 +79,7 @@ export default function SpotlightOfTheWeekHero({
               Buy
             </motion.button>
 
-            <Link href={`/mangas/${manga.id}`}>
+            <Link href={`/mangas/${manga.attributes?.slug}`}>
               <motion.button
                 className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                 whileHover={{
