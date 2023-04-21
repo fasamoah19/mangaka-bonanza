@@ -32,13 +32,17 @@ export default function MangaItem({ manga }: MangaItemProps) {
       </Link>
 
       {/** Manga Information */}
-      <div className="flex flex-col py-4 text-sm px-2 space-y-2">
-        <Link href={`/mangas/${manga.id}`}>
+      <div className="flex flex-col py-5 text-sm px-2 space-y-2">
+        <Link href={`/mangas/${manga.attributes?.slug}`}>
           <div className="text-sm font-semibold">{manga.attributes?.name}</div>
         </Link>
-        <Link href={"#"}> {/* TODO: Navigate to mangaka page */}</Link>
-        <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
-        <div className="font-semibold text-xs">{ manga.attributes?.price ? `$${manga.attributes?.price}` : ""}</div>
+        <Link href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}>
+          <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
+        </Link>
+
+        <div className="font-semibold text-xs">
+          {manga.attributes?.price ? `$${manga.attributes?.price}` : ""}
+        </div>
         <div className="flex flex-row space-x-2 place-items-center text-siteGray">
           {Array.from(Array(4).keys()).map((_, index) => (
             <div key={`${manga.attributes?.name}-${index}`}>

@@ -207,7 +207,7 @@ export default function SelectedMangaPage({
 
       {/** Reviews Section */}
       <section className="flex flex-col">
-        <div className="flex flex-row place-content-center text-4xl text-siteRed pb-1">
+        <div className="flex flex-row place-content-center text-4xl text-siteRed pb-16">
           Reviews
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
