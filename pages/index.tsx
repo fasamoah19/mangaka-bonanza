@@ -75,6 +75,7 @@ export default function Home({
     "On Sale",
   ];
   const [highlightFilter, setHighlightFilter] = useState<string>("New");
+
   return (
     <div className="flex flex-col pb-8">
       {/** Spotlight of the Week Hero */}

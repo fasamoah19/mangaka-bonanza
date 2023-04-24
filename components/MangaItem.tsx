@@ -4,6 +4,12 @@ import BookmarkIcon from "./icons/BookmarkIcon";
 import CartIcon from "./icons/CartIcon";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import RemoveFromCartIcon from "./icons/RemoveFromCartIcon";
+import { useState } from "react";
+import {
+  useCartContext,
+  useSetCartContext,
+} from "@/context/CartContextProvider";
 
 /** Props necessary for the component */
 type MangaItemProps = {
@@ -17,6 +23,11 @@ type MangaItemProps = {
  * @returns
  */
 export default function MangaItem({ manga }: MangaItemProps) {
+  // Context for the values in the cart array
+  const cart = useCartContext();
+  // Context for the function that adds and removes values from the cart array
+  const setCart = useSetCartContext();
+
   return (
     <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
       {/** Manga Cover */}
@@ -36,7 +47,9 @@ export default function MangaItem({ manga }: MangaItemProps) {
         <Link href={`/mangas/${manga.attributes?.slug}`}>
           <div className="text-sm font-semibold">{manga.attributes?.name}</div>
         </Link>
-        <Link href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}>
+        <Link
+          href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+        >
           <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
         </Link>
 
@@ -57,13 +70,22 @@ export default function MangaItem({ manga }: MangaItemProps) {
       {manga.attributes?.in_print ? (
         <div className="flex flex-row">
           <motion.button
+            layout
             className="flex w-1/2 h-7 bg-siteRed place-content-center place-items-center"
             whileHover={{
               scale: 1.05,
             }}
             whileTap={{ scale: 0.9 }}
+            onClick={(event) => {
+              event.preventDefault();
+              let newCart = [...cart, manga.id];
+              if (cart.includes(manga.id)) {
+                newCart = cart.filter((id) => id !== manga.id);
+              }
+              setCart(newCart);
+            }}
           >
-            <CartIcon />
+            {cart.includes(manga.id) ? <RemoveFromCartIcon /> : <CartIcon />}
           </motion.button>
           <motion.button
             className="flex w-1/2 h-7 bg-siteLightGray place-content-center place-items-center"
