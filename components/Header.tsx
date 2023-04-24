@@ -1,6 +1,7 @@
-import { Link } from "@chakra-ui/react";
 import { Anton } from "next/font/google";
 import UserIcon from "./icons/UserIcon";
+import { useCartContext } from "@/context/CartContextProvider";
+import Link from "next/link";
 
 /** Font used for the logo */
 const anton = Anton({ subsets: ["latin"], weight: "400" });
@@ -11,6 +12,7 @@ const anton = Anton({ subsets: ["latin"], weight: "400" });
  * @returns Header componenet
  */
 export default function Header() {
+  const cart = useCartContext();
   return (
     <header className="sticky z-50 top-0 bg-white py-4 shadow-sm">
       <div className="flex flex-row px-8">
@@ -20,25 +22,32 @@ export default function Header() {
           </Link>
         </div>
         <div className="grow"></div> {/** Spacer */}
-        <nav className="flex space-x-4 align-middle">
+        <nav className="flex space-x-4 place-items-center">
           <ul className="flex flex-col md:flex-row space-x-6">
             <li>
-              <Link className="text-sm" href="/">Home</Link>
+              <Link className="text-sm" href="/">
+                Home
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-sm">
+              <Link className="text-sm" href="#">
                 Genres
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-sm">
+              <Link href="#" className="text-sm">
                 Cart
-              </a>
+              </Link>
+              {cart.length > 0 ? (
+                <div className="rounded-full h-2 w-2 bg-siteRed absolute -translate-y-5 translate-x-6"></div>
+              ) : (
+                <></>
+              )}
             </li>
             <li>
-              <a href="#" className="text-sm">
+              <Link href="#" className="text-sm">
                 About
-              </a>
+              </Link>
             </li>
           </ul>
 

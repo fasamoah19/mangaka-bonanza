@@ -3,6 +3,7 @@ import GenreTag from "./GenreTag";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useCartContext, useSetCartContext } from "@/context/CartContextProvider";
 
 /** Necessary props for this component */
 type SpotlightOfTheWeekHeroProps = {
@@ -18,6 +19,9 @@ type SpotlightOfTheWeekHeroProps = {
 export default function SpotlightOfTheWeekHero({
   manga,
 }: SpotlightOfTheWeekHeroProps) {
+  const value = useCartContext()
+  const setValue = useSetCartContext()
+
   return (
     <section className="flex mt-5 mx-auto flex-col place-items-center">
       <div className="text-xl my-6 font-libreFranklin">
@@ -75,6 +79,7 @@ export default function SpotlightOfTheWeekHero({
               whileHover={{
                 scale: 0.9,
               }}
+              onClick={() => setValue([...value, manga.id])}
             >
               Buy
             </motion.button>
