@@ -1,6 +1,7 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
+import { strapiFetch } from "@/lib/custom-functions";
 import { Manga, Mangaka } from "@/lib/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
@@ -27,16 +28,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL!}/api/mangakas?${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
-      },
-    }
-  );
+  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAKAS_PATH!, query)
 
   const mangakaObject = await response.json();
   const mangaka = mangakaObject.data[0] as Mangaka;

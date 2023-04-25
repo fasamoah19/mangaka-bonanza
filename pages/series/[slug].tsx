@@ -1,6 +1,7 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
+import { strapiFetch } from "@/lib/custom-functions";
 import { Manga, MangaSeries } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -15,17 +16,14 @@ import qs from "qs";
  * @returns Array of manga objects that are similar in genre
  */
 async function getSimilarTitles(selectedManga: Manga) {
-  const responseSimilarTitles = await fetch(
-    `${process.env
-      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas?populate=mangaka,image`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
-      },
+  const query = qs.stringify({
+    populate: {
+      image: true,
+      mangaka: true
     }
-  );
+  }, { encodeValuesOnly: true })
+
+  const responseSimilarTitles = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!, query)
   const mangas = await responseSimilarTitles.json();
 
   const similarTitles = (mangas.data as Manga[])
@@ -69,16 +67,7 @@ async function getMangaSeries(slug: string) {
     }
   );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL!}/api/manga-series-pl?${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
-      },
-    }
-  );
+  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGA_SERIES_PATH!, query)
 
   const mangaSeriesObject = await response.json();
   const mangaSeries = mangaSeriesObject.data[0] as MangaSeries;
@@ -174,7 +163,7 @@ export default function MangaSeriesPage({
                 Buy
               </motion.button>
 
-              <Link href={`/mangas/${mangas[0].id}`}>
+              <Link href={`/mangas/${mangas[0].attributes?.slug}`}>
                 <motion.button
                   className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                   whileHover={{
