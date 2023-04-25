@@ -24,10 +24,16 @@ export default function Header() {
         <div className="grow"></div> {/** Spacer */}
         <nav className="flex space-x-4 place-items-center">
           <ul className="flex flex-col md:flex-row space-x-6">
-            <li>
+            <li className="group relative">
               <Link className="text-sm" href="/">
                 Home
               </Link>
+              <span
+                className="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
+    -translate-x-1/2 translate-y-1/3 opacity-0 m-4 mx-auto"
+              >
+                Tooltip
+              </span>
             </li>
             <li>
               <Link className="text-sm" href="#">
