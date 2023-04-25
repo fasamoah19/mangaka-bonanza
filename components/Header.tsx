@@ -35,7 +35,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-sm">
+              <Link href="/cart" className="text-sm">
                 Cart
               </Link>
               {cart.length > 0 ? (

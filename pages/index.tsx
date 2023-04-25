@@ -5,6 +5,7 @@ import SpotlightOfTheWeekHero from "@/components/SpotlightOfTheWeekHero";
 import SectionDivider from "@/components/Divider";
 import MangaItem from "@/components/MangaItem";
 import qs from "qs";
+import { strapiFetch } from "@/lib/custom-functions";
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
@@ -26,17 +27,7 @@ export async function getServerSideProps() {
     }
   );
 
-  const response = await fetch(
-    `${process.env
-      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas?${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
-      },
-    }
-  );
+  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!, query)
   const mangas = await response.json();
 
   return {

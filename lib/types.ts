@@ -78,3 +78,6 @@ export type MangaSeries = {
     slug: string
   }
 }
+
+// Cart Type (an array of numbers)
+export type Cart = number[]
