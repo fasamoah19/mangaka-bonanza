@@ -44,11 +44,6 @@ export default function Header() {
                 <></>
               )}
             </li>
-            <li>
-              <Link href="#" className="text-sm">
-                About
-              </Link>
-            </li>
           </ul>
 
           <UserIcon />
