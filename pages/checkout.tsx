@@ -1,4 +1,4 @@
-import SectionDivider from "@/components/Divider";
+import OrderSummary from "@/components/OrderSummary";
 import CityField from "@/components/form/CityField";
 import CvvField from "@/components/form/CvvField";
 import ExpiryDateFields from "@/components/form/ExpiryDateFields";
@@ -8,9 +8,10 @@ import ZipCodeField from "@/components/form/ZipCodeField";
 import { useCartContext } from "@/context/CartContextProvider";
 import { getMangas, getRecommended } from "@/lib/custom-functions";
 import { Manga } from "@/lib/types";
+import { checkoutInitialValues, checkoutReducer } from "@/reducers/checkout_reducer";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 type PaymentType = "apple-pay" | "google-pay" | "cc" | "pay-pal";
 
@@ -24,10 +25,10 @@ export default function CheckoutPage() {
 
   const [mangas, setMangas] = useState<Manga[]>([]);
   const [recommended, setRecommended] = useState<Manga[]>([]);
-  const [total, setTotal] = useState<string>("");
-  const [tax, setTax] = useState<string>("");
   const [isLoading, setLoading] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentType>("apple-pay");
+
+  const [state, dispatch] = useReducer(checkoutReducer, checkoutInitialValues)
 
   /** Updates the total displayed on the page */
   const updateTotal = () => {
@@ -37,14 +38,18 @@ export default function CheckoutPage() {
       sum = sum + (manga.attributes?.price ?? 0);
     });
     let floatTax = parseFloat((sum * 0.06).toFixed(2));
+    let finalTax = floatTax.toString()
     if (floatTax.toString().split(".").length > 1) {
-      setTax(
-        floatTax.toString().split(".")[1].length == 1
-          ? `${floatTax.toString()}0`
-          : floatTax.toString()
-      );
+      finalTax = floatTax.toString().split(".")[1].length == 1
+      ? `${floatTax.toString()}0`
+      : floatTax.toString()
     }
-    setTotal((sum + shipping + floatTax).toFixed(2));
+
+    dispatch({ type: 'update', payload: {
+      ...state,
+      tax: finalTax,
+      total: (sum + shipping + floatTax).toFixed(2).toString()
+    }})
   };
 
   /**
@@ -96,7 +101,7 @@ export default function CheckoutPage() {
         <div className="flex flex-col place-items-center place-content-center">
           <form
             className="flex flex-col gap-y-12"
-            onSubmit={() => {}}
+            onSubmit={(event) => {event.preventDefault()}}
             id="order-form"
           >
             {/** Delivery information */}
@@ -105,23 +110,23 @@ export default function CheckoutPage() {
                 Delivery Information
               </div>
               {/** Name */}
-              <InputFieldLong placeholder="Name" />
+              <InputFieldLong placeholder="Name" state={state} dispatch={dispatch} updateField="deliveryName" />
 
               {/** Address 1 */}
-              <InputFieldLong placeholder="Address 1" />
+              <InputFieldLong placeholder="Address 1" state={state} dispatch={dispatch} updateField="deliveryAddress" />
 
               {/** Address 2 */}
-              <InputFieldLong placeholder="Address 2" />
+              <InputFieldLong placeholder="Address 2" state={state} dispatch={dispatch} updateField="deliveryAddressTwo" />
 
               {/** City and Zip */}
               <div className="flex flex-row place-content-start w-full">
-                <CityField />
+                <CityField state={state} dispatch={dispatch} updateField="deliveryCity" />
                 <div className="grow"></div>
-                <ZipCodeField />
+                <ZipCodeField state={state} dispatch={dispatch} updateField="deliveryZipCode" />
               </div>
 
               {/** State */}
-              <StateField />
+              <StateField state={state} dispatch={dispatch} updateField="deliveryState" />
             </div>
 
             {/** Payment */}
@@ -185,20 +190,20 @@ export default function CheckoutPage() {
               {paymentType == "cc" ? (
                 <div className="flex flex-col gap-y-5 w-96">
                   {/** Name of card */}
-                  <InputFieldLong placeholder="Name on card" />
+                  <InputFieldLong placeholder="Name on card" state={state} dispatch={dispatch} updateField="nameOnCard"  />
 
                   {/** Credit Card # */}
-                  <InputFieldLong placeholder="Credit Card #" />
+                  <InputFieldLong placeholder="Credit Card #" state={state} dispatch={dispatch} updateField="ccNumber"  />
 
                   <div className="grid grid-cols-3 place-items-star gap-3">
                     {/** CVV */}
-                    <CvvField />
+                    <CvvField state={state} dispatch={dispatch} updateField="cvv" />
 
                     {/** Expiry Date */}
-                    <ExpiryDateFields />
+                    <ExpiryDateFields state={state} dispatch={dispatch} />
                   </div>
 
-                  <ZipCodeField />
+                  <ZipCodeField state={state} dispatch={dispatch} updateField="cardZipCode" />
                 </div>
               ) : (
                 <></>
@@ -212,23 +217,23 @@ export default function CheckoutPage() {
                   Billing Information
                 </div>
                 {/** Name */}
-                <InputFieldLong placeholder="Name" />
+                <InputFieldLong placeholder="Name" state={state} dispatch={dispatch} updateField="billingName" />
 
                 {/** Address 1 */}
-                <InputFieldLong placeholder="Address 1" />
+                <InputFieldLong placeholder="Address 1" state={state} dispatch={dispatch} updateField="billingAddress" />
 
                 {/** Address 2 */}
-                <InputFieldLong placeholder="Address 2" />
+                <InputFieldLong placeholder="Address 2" state={state} dispatch={dispatch} updateField="billingAddressTwo" />
 
                 {/** City and Zip */}
                 <div className="flex flex-row place-content-start w-full">
-                  <CityField />
+                  <CityField state={state} dispatch={dispatch} updateField="billingCity" />
                   <div className="grow"></div>
-                  <ZipCodeField />
+                  <ZipCodeField state={state} dispatch={dispatch} updateField="billingZipCode" />
                 </div>
 
                 {/** State */}
-                <StateField />
+                <StateField state={state} dispatch={dispatch} updateField="billingState" />
               </div>
             ) : (
               <></>
@@ -238,79 +243,8 @@ export default function CheckoutPage() {
 
         <div className="grow"></div>
 
-        <div className="flex flex-col place-items-center">
-          {/** Order box */}
-          <div className="flex flex-col p-6 gap-y-6 bg-siteLightGray h-fit">
-            <div className="flex flex-row font-libreFranklin text-lg">
-              Order
-            </div>
-            {mangas.length == 0 ? (
-              <div>No manga was added to the cart</div>
-            ) : (
-              <div className="flex flex-col bg-white p-6 gap-y-2 w-80">
-                {mangas.map((manga) => (
-                  <div className="flex flex-row" key={manga.id}>
-                    <div className="font-libreFranklin text-sm">
-                      {manga.attributes?.name}
-                    </div>
-                    <div className="grow"></div>
-                    <div className="font-libreFranklin text-sm">
-                      {`$${manga.attributes?.price}`}
-                    </div>
-                  </div>
-                ))}
-
-                <div className="flex flex-col mt-12 gap-y-4">
-                  <div className="flex flex-row">
-                    <div className="font-libreFranklin text-sm">Tax</div>
-                    <div className="grow"></div>
-                    <div className="font-libreFranklin text-sm">
-                      {`$${tax}`}
-                    </div>
-                  </div>
-                  <div className="flex flex-row">
-                    <div className="font-libreFranklin text-sm">Shipping</div>
-                    <div className="grow"></div>
-                    <div className="font-libreFranklin text-sm">$5.00</div>
-                  </div>
-                </div>
-
-                <div className="my-6">
-                  <div className="border-t-2"></div>
-                </div>
-
-                <div className="flex flex-row pb-2">
-                  <div className="font-libreFranklin text-sm">Total</div>
-                  <div className="grow"></div>
-                  <div className="font-libreFranklin text-sm">{`$${total}`}</div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/** Buttons */}
-          <div className="flex-col flex mt-8 gap-y-6">
-            <motion.button
-              className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
-              whileHover={{
-                scale: 0.9,
-              }}
-            >
-              Purchase
-            </motion.button>
-
-            <Link href={"/cart"}>
-              <motion.button
-                className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
-                whileHover={{
-                  scale: 0.9,
-                }}
-              >
-                Back To Cart
-              </motion.button>
-            </Link>
-          </div>
-        </div>
+        {/** Order Box */}
+        <OrderSummary mangas={mangas} tax={state.tax} total={state.total} />
       </section>
 
       {/* <SectionDivider /> */}

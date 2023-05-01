@@ -1,13 +1,41 @@
+import {
+  CheckoutFormState,
+  CheckoutFormAction,
+} from "@/reducers/checkout_reducer";
+import { Dispatch } from "react";
+
+/** Necessary props for the component */
+type ExpiryDateFieldsProps = {
+  state: CheckoutFormState;
+  dispatch: Dispatch<CheckoutFormAction>;
+};
+
 /**
  * Custom component that allows a user to select the expiration date for a credit
  * card
- * 
- * @returns ExpiryDateFields component 
+ *
+ * @returns ExpiryDateFields component
  */
-export default function ExpiryDateFields() {
+export default function ExpiryDateFields({
+  state,
+  dispatch,
+}: ExpiryDateFieldsProps) {
   return (
     <div className="flex flex-row gap-x-4">
-      <select name="expireMM" id="expireMM">
+      <select
+        name="expireMM"
+        id="expireMM"
+        required
+        onChange={(event) => {
+          dispatch({
+            type: "update",
+            payload: {
+              ...state,
+              expiryMonth: event.currentTarget.value,
+            },
+          });
+        }}
+      >
         <option value="">Month</option>
         <option value="01">January</option>
         <option value="02">February</option>
@@ -22,7 +50,20 @@ export default function ExpiryDateFields() {
         <option value="11">November</option>
         <option value="12">December</option>
       </select>
-      <select name="expireYY" id="expireYY">
+      <select
+        name="expireYY"
+        id="expireYY"
+        required
+        onChange={(event) => {
+          dispatch({
+            type: "update",
+            payload: {
+              ...state,
+              expiryYear: event.currentTarget.value,
+            },
+          });
+        }}
+      >
         <option value="">Year</option>
         <option value="23">2023</option>
         <option value="24">2024</option>

@@ -1,12 +1,41 @@
+import {
+  CheckoutFormState,
+  CheckoutFormAction,
+} from "@/reducers/checkout_reducer";
+import { Dispatch } from "react";
+
+/** Necessary props for the component */
+type StateFieldProps = {
+  state: CheckoutFormState;
+  dispatch: Dispatch<CheckoutFormAction>;
+  updateField: string;
+};
+
 /**
  * Custom input for taking in States
  *
  * @returns StateField Component
  */
-export default function StateField() {
+export default function StateField({
+  state,
+  dispatch,
+  updateField,
+}: StateFieldProps) {
   return (
     <div className="flex flex-row h-8">
-      <select className="">
+      <select
+        className=""
+        required
+        onChange={(event) => {
+          dispatch({
+            type: "update",
+            payload: {
+              ...state,
+              [updateField]: event.currentTarget.value,
+            },
+          });
+        }}
+      >
         <option value="AL">Alabama</option>
         <option value="AK">Alaska</option>
         <option value="AZ">Arizona</option>
