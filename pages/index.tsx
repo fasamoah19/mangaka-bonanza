@@ -20,7 +20,10 @@ export async function getServerSideProps() {
           $eq: true,
         },
       },
-      populate: ['mangaka', 'image']
+      populate: ['mangaka', 'image'],
+      pagination: {
+        pageSize: 50
+      }
     },
     {
       encodeValuesOnly: true,
@@ -48,22 +51,22 @@ export default function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const spotlightOfTheWeekManga: Manga = mangas[12];
   const filterTags = [
-    "Top 20",
-    "Shonen",
-    "Rising Stars",
+    "Action-Adventure",
+    "Comedy",
+    "Drama",
     "New",
-    "Classics",
-    "Comedy",
-    "On Sale",
-  ];
+    "Sci-Fi",
+    "Sports",
+    "Supernatural"
+  ]
   const titles = [
-    "Top 20",
-    "Shonen",
-    "Rising Stars",
-    "New Releases",
-    "Classics",
+    "Action-Adventure",
     "Comedy",
-    "On Sale",
+    "Drama",
+    "New",
+    "Sci-Fi",
+    "Sports",
+    "Supernatural"
   ];
   const [highlightFilter, setHighlightFilter] = useState<string>("New");
 
@@ -103,7 +106,14 @@ export default function Home({
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
           {/** Manga Item */}
           {mangas
-            .filter((manga) => manga.attributes?.in_print == true)
+            .filter((manga) => manga.attributes?.in_print == true).filter((manga) => {
+              if (highlightFilter == "New") {
+                return manga.attributes?.release_date.includes("2023")
+              }
+              else {
+                return manga.attributes?.genres.includes(highlightFilter)
+              }
+            })
             .map((manga) => (
               <div key={manga.id}>
                 <MangaItem manga={manga} />
