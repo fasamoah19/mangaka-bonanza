@@ -27,7 +27,8 @@ module.exports = {
         siteRed: "#D21416",
         mangaCard: 'rgba(217, 217, 217, 0.21)',
         siteBlue: "#A6E1FA",
-        cartItemBg: 'rgba(217, 217, 217, 0.46)'
+        cartItemBg: 'rgba(217, 217, 217, 0.46)',
+        inputBg: 'rgba(217, 217, 217, 0.55)',
       }
     }
   },
