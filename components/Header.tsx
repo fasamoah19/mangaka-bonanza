@@ -45,18 +45,19 @@ export default function Header() {
           </Link>
         </div>
         <div className="grow"></div> {/** Spacer */}
-        <nav className="hidden md:flex space-x-4 place-items-center">
-          <ul className="flex flex-col md:flex-row space-x-6">
+        <nav className="hidden md:flex space-x-4">
+          <ul className="flex flex-row space-x-6 place-items-center">
             <li>
               <Link className="text-sm font-semibold text-gray-600" href="/">
                 Home
               </Link>
             </li>
-            <li className="group">
-              <Link className="text-sm font-semibold text-gray-600" href="#">
+            <li className="group place-content-center">
+              <div className="text-sm font-semibold text-gray-600 pt-0.5 cursor-pointer">
                 Genres
-              </Link>
+              </div>
               {/** List of genres in the hidden menu. Menu displays on hover */}
+              {/* <GenresDropDownMenu /> */}
               <div className="hidden w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl group-hover:flex group-hover:flex-col gap-y-3">
                 {genres.map((genre) => (
                   <Link
@@ -89,7 +90,11 @@ export default function Header() {
         {/** Mobile Header */}
         <div className="flex md:hidden">
           <div className="group">
-            <HamburgerMenu showMenu={showMenu} setShowMenu={setShowMenu} closeMenus={closeMenus} />
+            <HamburgerMenu
+              showMenu={showMenu}
+              setShowMenu={setShowMenu}
+              closeMenus={closeMenus}
+            />
             {/** Dropdown Menu */}
             {showMenu ? (
               <div className="hidden w-28 absolute right-4 px-4 py-4 bg-white shadow-md rounded-xl group-hover:flex">
@@ -103,25 +108,29 @@ export default function Header() {
                         Home
                       </Link>
                     </li>
-                    <li className="group" onClick={() => {setShowMobileGenreMenu(!showMobileGenreMenu)}}>
-                      <div
-                        className="text-sm font-semibold text-gray-600"
-                      >
+                    <li
+                      className="group"
+                      onClick={() => {
+                        setShowMobileGenreMenu(!showMobileGenreMenu);
+                      }}
+                    >
+                      <div className="text-sm font-semibold text-gray-600">
                         Genres
                       </div>
                       {/** List of genres in the hidden menu. Menu displays on click/tap of Genres list item */}
                       {showMobileGenreMenu ? (
-                        <div className="flex flex-col top-10 right-28 w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl gap-y-3">
-                          {genres.map((genre) => (
-                            <Link
-                              href={`/genres/${genre}`}
-                              key={genre}
-                              className="text-sm font-medium hover:text-siteRed text-gray-500"
-                            >
-                              {genre}
-                            </Link>
-                          ))}
-                        </div>
+                        // <div className="flex flex-col top-10 right-28 w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl gap-y-3">
+                        //   {genres.map((genre) => (
+                        //     <Link
+                        //       href={`/genres/${genre}`}
+                        //       key={genre}
+                        //       className="text-sm font-medium hover:text-siteRed text-gray-500"
+                        //     >
+                        //       {genre}
+                        //     </Link>
+                        //   ))}
+                        // </div>
+                        <GenresDropDownMenu />
                       ) : (
                         <></>
                       )}
@@ -151,3 +160,19 @@ export default function Header() {
     </header>
   );
 }
+
+const GenresDropDownMenu = () => {
+  return (
+    <div className="flex flex-col top-10 right-28 md:top-auto md:right-auto md:hidden md:group-hover:flex md:group-hover:flex-col w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl gap-y-3">
+      {genres.map((genre) => (
+        <Link
+          href={`/genres/${genre}`}
+          key={genre}
+          className="text-sm font-medium hover:text-siteRed text-gray-500"
+        >
+          {genre}
+        </Link>
+      ))}
+    </div>
+  );
+};
