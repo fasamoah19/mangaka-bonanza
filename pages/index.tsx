@@ -20,17 +20,20 @@ export async function getServerSideProps() {
           $eq: true,
         },
       },
-      populate: ['mangaka', 'image'],
+      populate: ["mangaka", "image"],
       pagination: {
-        pageSize: 50
-      }
+        pageSize: 50,
+      },
     },
     {
       encodeValuesOnly: true,
     }
   );
 
-  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!, query)
+  const response = await strapiFetch(
+    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
+    query
+  );
   const mangas = await response.json();
 
   return {
@@ -57,8 +60,8 @@ export default function Home({
     "New",
     "Sci-Fi",
     "Sports",
-    "Supernatural"
-  ]
+    "Supernatural",
+  ];
   const titles = [
     "Action-Adventure",
     "Comedy",
@@ -66,7 +69,7 @@ export default function Home({
     "New",
     "Sci-Fi",
     "Sports",
-    "Supernatural"
+    "Supernatural",
   ];
   const [highlightFilter, setHighlightFilter] = useState<string>("New");
 
@@ -82,8 +85,23 @@ export default function Home({
       {/** Display Mangas Section */}
       <section className="flex flex-col">
         {/** Filter Tags */}
-        <div className="flex flex-row justify-between">
+        <div className="md:flex md:flex-row md:justify-between hidden">
           {filterTags.map((filter) => (
+            <div
+              className="font-libreFranklin text-base hover:cursor-pointer"
+              key={filter}
+              onClick={() => setHighlightFilter(filter)}
+              style={{
+                color: highlightFilter == filter ? "#D21416" : "#787878",
+              }}
+            >
+              {filter}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-row justify-between md:hidden">
+          {filterTags.splice(0, 3).map((filter) => (
             <div
               className="font-libreFranklin text-base hover:cursor-pointer"
               key={filter}
@@ -103,15 +121,15 @@ export default function Home({
         </div>
 
         {/** List of Manga */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
           {/** Manga Item */}
           {mangas
-            .filter((manga) => manga.attributes?.in_print == true).filter((manga) => {
+            .filter((manga) => manga.attributes?.in_print == true)
+            .filter((manga) => {
               if (highlightFilter == "New") {
-                return manga.attributes?.release_date.includes("2023")
-              }
-              else {
-                return manga.attributes?.genres.includes(highlightFilter)
+                return manga.attributes?.release_date.includes("2023");
+              } else {
+                return manga.attributes?.genres.includes(highlightFilter);
               }
             })
             .map((manga) => (

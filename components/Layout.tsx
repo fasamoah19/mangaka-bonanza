@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <>
       <Header />
-      <div className="pb-16 px-8">
+      <div className="pb-16 px-4 md:px-8">
         <Banner />
         <main className="relative">{children}</main>
       </div>
@@ -27,7 +27,7 @@ export default function Layout({ children }: LayoutProps) {
 /** Component that displays the banner of kid goku underneath the header */
 const Banner = () => {
   return (
-    <div className="flex py-3">
+    <div className="hidden md:flex py-3">
       {/** Banner */}
       <img
         src={"/banner.jpg"}
