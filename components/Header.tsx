@@ -57,18 +57,7 @@ export default function Header() {
                 Genres
               </div>
               {/** List of genres in the hidden menu. Menu displays on hover */}
-              {/* <GenresDropDownMenu /> */}
-              <div className="hidden w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl group-hover:flex group-hover:flex-col gap-y-3">
-                {genres.map((genre) => (
-                  <Link
-                    href={`/genres/${genre}`}
-                    key={genre}
-                    className="text-sm font-medium hover:text-siteRed text-gray-500"
-                  >
-                    {genre}
-                  </Link>
-                ))}
-              </div>
+              <GenresDropDownMenu />
             </li>
             <li>
               <Link
@@ -119,17 +108,6 @@ export default function Header() {
                       </div>
                       {/** List of genres in the hidden menu. Menu displays on click/tap of Genres list item */}
                       {showMobileGenreMenu ? (
-                        // <div className="flex flex-col top-10 right-28 w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl gap-y-3">
-                        //   {genres.map((genre) => (
-                        //     <Link
-                        //       href={`/genres/${genre}`}
-                        //       key={genre}
-                        //       className="text-sm font-medium hover:text-siteRed text-gray-500"
-                        //     >
-                        //       {genre}
-                        //     </Link>
-                        //   ))}
-                        // </div>
                         <GenresDropDownMenu />
                       ) : (
                         <></>
@@ -161,6 +139,11 @@ export default function Header() {
   );
 }
 
+/**
+ * Component for Genre dropdown menu
+ * 
+ * @returns GenresDropDownMenu component
+ */
 const GenresDropDownMenu = () => {
   return (
     <div className="flex flex-col top-10 right-28 md:top-auto md:right-auto md:hidden md:group-hover:flex md:group-hover:flex-col w-36 absolute px-4 py-4 bg-white shadow-md rounded-xl gap-y-3">
