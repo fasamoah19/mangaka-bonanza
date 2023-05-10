@@ -20,7 +20,7 @@ export default function MangaGrid({ mangas, gridTitle, titleColor }: MangaGridPr
       <div className={`flex flex-row place-content-center text-4xl ${titleColor} pb-16`}>
         {gridTitle}
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
         {mangas.map((manga) => (
           <div key={manga.attributes?.name}>
             <MangaItem manga={manga} />

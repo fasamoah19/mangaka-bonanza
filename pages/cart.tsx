@@ -3,13 +3,12 @@ import {
   useSetCartContext,
 } from "@/context/CartContextProvider";
 import { Manga } from "@/lib/types";
-import qs from "qs";
 import { useEffect, useState } from "react";
 import CartItem from "@/components/CartItem";
 import SectionDivider from "@/components/Divider";
 import { motion } from "framer-motion";
 import MangaGrid from "@/components/MangaGrid";
-import { getMangas, getRecommended, strapiFetch } from "@/lib/custom-functions";
+import { getMangas, getRecommended } from "@/lib/custom-functions";
 import Link from "next/link";
 
 /**
