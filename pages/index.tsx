@@ -101,7 +101,7 @@ export default function Home({
         </div>
 
         <div className="flex flex-row justify-between md:hidden">
-          {filterTags.splice(0, 3).map((filter) => (
+          {filterTags.slice(0, 3).map((filter) => (
             <div
               className="font-libreFranklin text-base hover:cursor-pointer"
               key={filter}

@@ -73,9 +73,9 @@ export default function SpotlightOfTheWeekHero({
           </div>
 
           {/** Buttons */}
-          <div className="flex flex-row gap-x-px md:gap-x-5 pt-0.5 place-content-center md:place-content-start justify-between">
+          <div className="flex flex-col md:flex-row md:gap-x-5 pt-0.5 gap-y-5 place-items-center md:place-content-start justify-between">
             <motion.button
-              className="w-28 md:w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+              className="w-52 md:w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
               whileHover={{
                 scale: 0.9,
               }}
@@ -86,7 +86,7 @@ export default function SpotlightOfTheWeekHero({
 
             <Link href={`/mangas/${manga.attributes?.slug}`}>
               <motion.button
-                className="w-28 md:w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
+                className="w-52 md:w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                 whileHover={{
                   scale: 0.9,
                 }}
