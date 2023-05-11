@@ -84,7 +84,7 @@ export default function CartPage() {
       {/** Cart Section */}
       <section className="flex flex-col">
         {/** Page title */}
-        <div className="flex flex-row place-content-center text-4xl text-siteRed py-11">
+        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
           Cart
         </div>
 
@@ -105,12 +105,12 @@ export default function CartPage() {
             </div>
 
             {/** Total */}
-            <div className="flex flex-row place-content-end text-xl font-libreFranklin">
+            <div className="flex flex-row place-content-center md:place-content-end text-xl font-libreFranklin">
               {`Total: $${total}`}
             </div>
 
             {/** Checkout button */}
-            <div className="flex flex-row place-content-end">
+            <div className="flex flex-row place-content-center md:place-content-end">
               <Link href="/checkout">
                 <motion.button
                   className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"

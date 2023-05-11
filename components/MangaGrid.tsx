@@ -17,7 +17,7 @@ type MangaGridProps = {
 export default function MangaGrid({ mangas, gridTitle, titleColor }: MangaGridProps) {
   return (
     <section className="flex flex-col">
-      <div className={`flex flex-row place-content-center text-4xl ${titleColor} pb-16`}>
+      <div className={`flex flex-row place-content-center text-center text-2xl md:text-4xl ${titleColor} pb-16`}>
         {gridTitle}
       </div>
       {/** Desktop Grid */}

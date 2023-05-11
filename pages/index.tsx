@@ -116,7 +116,7 @@ export default function Home({
         </div>
 
         {/** Title */}
-        <div className="flex flex-row place-content-center text-4xl text-siteRed py-11">
+        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
           {titles[filterTags.indexOf(highlightFilter)]}
         </div>
 
