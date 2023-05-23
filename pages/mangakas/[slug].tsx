@@ -1,12 +1,18 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
-import MangaGrid from "@/components/MangaGrid";
+import SeriesGrid from "@/components/SeriesGrid";
 import { strapiFetch } from "@/lib/custom-functions";
-import { Manga, Mangaka } from "@/lib/types";
+import { MangaSeries, Mangaka } from "@/lib/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import qs from "qs";
 
+/**
+ * Retrieves the selected mangaka
+ * 
+ * @param context GetServerSidePropsContext (retrieves the mangaka name slug)
+ * @returns The mangaka object and a list of series objects that the mangaka wrote
+ */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const slug = context.params?.slug;
   const query = qs.stringify(
@@ -21,6 +27,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           populate: ["image", "mangaka"],
         },
         image: true,
+        manga_series: {
+          populate: ["firstCover", "mangaka"]
+        },
       },
     },
     {
@@ -32,12 +41,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const mangakaObject = await response.json();
   const mangaka = mangakaObject.data[0] as Mangaka;
-  const mangas = mangaka.attributes?.manga.data as Manga[];
+  const seriesList = mangaka.attributes?.manga_series.data as MangaSeries[]
 
   return {
     props: {
       mangaka: mangaka,
-      mangas: mangas,
+      seriesList: seriesList
     },
   };
 }
@@ -50,21 +59,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
  */
 export default function MangakaPage({
   mangaka,
-  mangas,
+  seriesList
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const filteredMangas = mangas.filter((manga, index, self) => {
-    return (
-      self.findIndex(
-        (v) => v.attributes?.series_name === manga.attributes?.series_name
-      ) === index
-    );
-  })
+
   return (
     <div className="flex flex-col pb-8">
       {/** Selected Mangaka Page Section */}
       <section className="flex mt-16 mx-auto flex-col place-items-center">
-        {/** Mangaka Information */}
-        <div className="flex gap-12">
+        {/** Desktop Design */}
+        <div className="flex flex-col md:flex-row md:gap-12">
           <Image
             src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
               mangaka.attributes?.image.data.attributes?.url
@@ -76,29 +79,29 @@ export default function MangakaPage({
             width={536}
           />
 
-          <div className="align-middle space-y-4 md:space-y-6 place-content-center">
+          <div className="flex flex-col place-items-center gap-y-5 pt-5 md:pt-0 md:place-items-start md:space-y-4 md:place-content-start">
             {/** Mangaka Name */}
             <div className="font-libreFranklin text-3xl leading-none">
               {mangaka.attributes?.name}
             </div>
 
             {/** Date of Birth */}
-            <div className="text-xl">
+            <div className="text-base md:text-xl">
               <b>Date of Birth:</b> {` ${mangaka.attributes?.date_of_birth}`}
             </div>
 
             {/** Birth Place */}
-            <div className="text-xl">
+            <div className="text-base md:text-xl">
               <b>Birth Place:</b> {` ${mangaka.attributes?.birth_place}`}
             </div>
 
             {/** First Manga */}
-            <div className="text-xl">
+            <div className="text-base md:text-xl">
               <b>First Manga:</b> {` ${mangaka.attributes?.firstMangaTitle}`}
             </div>
 
             {/** Most Recent Manga */}
-            <div className="text-xl">
+            <div className="text-base md:text-xl">
               <b>Most Recent Manga:</b>{" "}
               {` ${mangaka.attributes?.mostRecentMangaTitle}`}
             </div>
@@ -115,20 +118,18 @@ export default function MangakaPage({
             </div>
 
             {/** Mangaka Bio */}
-            <div className="text-md max-w-md min-h-[120px]">
+            <div className="text-base max-w-lg md:max-w-md md:min-h-[120px]">
               {mangaka.attributes?.bio}
             </div>
           </div>
         </div>
+
+        {/** Mobile design */}
       </section>
 
       <SectionDivider />
 
-      <MangaGrid
-        mangas={filteredMangas}
-        gridTitle={`${mangaka.attributes?.name}'s Work`}
-        titleColor={"text-siteRed"}
-      />
+      <SeriesGrid seriesList={seriesList} gridTitle={`${mangaka.attributes?.name}'s Work`} />
     </div>
   );
 }

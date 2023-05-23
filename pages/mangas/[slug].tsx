@@ -293,7 +293,7 @@ export default function SelectedMangaPage({
 
       {/** Reviews Section */}
       <section className="flex flex-col">
-        <div className="flex flex-row place-content-center text-4xl text-siteRed pb-16">
+        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed pb-16">
           Reviews
         </div>
         {/** Desktop Grid */}
