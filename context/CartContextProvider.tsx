@@ -1,7 +1,7 @@
+import { Cart } from "@/lib/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
-// Cart Type (an array of numbers)
-type Cart = number[]
+
 
 /**
  * This function serves as global state for adding and removing elements from the cart
@@ -15,7 +15,6 @@ export function globalCartStorage() {
   }, [])
 
   const setValue = (value: number[]) => {
-    console.log("Run", value)
     setCart(value)
   }
 

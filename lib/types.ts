@@ -52,6 +52,9 @@ export type Mangaka = {
     };
     manga: {
       data: Manga[]
+    },
+    manga_series: {
+      data: MangaSeries[]
     }
   }
 }
@@ -75,6 +78,9 @@ export type MangaSeries = {
     mangas: {
       data: Manga[]
     },
-    slug: string
+    slug: string,
   }
 }
+
+// Cart Type (an array of numbers)
+export type Cart = number[]

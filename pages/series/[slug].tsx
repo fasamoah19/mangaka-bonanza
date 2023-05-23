@@ -1,6 +1,7 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
+import { strapiFetch } from "@/lib/custom-functions";
 import { Manga, MangaSeries } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -15,16 +16,19 @@ import qs from "qs";
  * @returns Array of manga objects that are similar in genre
  */
 async function getSimilarTitles(selectedManga: Manga) {
-  const responseSimilarTitles = await fetch(
-    `${process.env
-      .NEXT_PUBLIC_STRAPI_API_URL!}/api/mangas?populate=mangaka,image`,
+  const query = qs.stringify(
     {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
+      populate: {
+        image: true,
+        mangaka: true,
       },
-    }
+    },
+    { encodeValuesOnly: true }
+  );
+
+  const responseSimilarTitles = await strapiFetch(
+    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
+    query
   );
   const mangas = await responseSimilarTitles.json();
 
@@ -69,15 +73,9 @@ async function getMangaSeries(slug: string) {
     }
   );
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL!}/api/manga-series-pl?${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
-      },
-    }
+  const response = await strapiFetch(
+    process.env.NEXT_PUBLIC_STRAPI_API_MANGA_SERIES_PATH!,
+    query
   );
 
   const mangaSeriesObject = await response.json();
@@ -114,8 +112,8 @@ export default function MangaSeriesPage({
   return (
     <div className="flex flex-col pb-8">
       {/** Manag Series Section */}
-      <section className="flex mt-16 mx-auto flex-col place-items-center">
-        <div className="flex gap-12">
+      <section className="flex mt-16 md:mx-auto flex-col place-items-center">
+        <div className="hidden md:flex md:gap-12">
           <Image
             src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
               mangaSeries.attributes?.firstCover.data.attributes?.url
@@ -174,7 +172,7 @@ export default function MangaSeriesPage({
                 Buy
               </motion.button>
 
-              <Link href={`/mangas/${mangas[0].id}`}>
+              <Link href={`/mangas/${mangas[0].attributes?.slug}`}>
                 <motion.button
                   className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                   whileHover={{
@@ -186,6 +184,75 @@ export default function MangaSeriesPage({
               </Link>
             </div>
           </div>
+        </div>
+
+        {/** Mobile design */}
+        <div className="flex flex-col gap-y-5 place-items-center md:hidden">
+          <Image
+            src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
+              mangaSeries.attributes?.firstCover.data.attributes?.url
+            }`}
+            alt={
+              mangaSeries.attributes?.firstCover.data.attributes
+                ?.alternativeText ?? ""
+            }
+            height={420}
+            width={280}
+          />
+          {/** Manga Name */}
+          <div className="font-libreFranklin text-3xl leading-none">
+            {mangaSeries.attributes?.name}
+          </div>
+
+          {/** Author Name */}
+          <div className="text-base md:text-xl">
+            <Link
+              href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
+            >
+              <b>Author:</b>{" "}
+              {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+            </Link>
+          </div>
+
+          {/** Release Date */}
+          <div className="text-base md:text-xl">
+            <b>Release Date:</b>
+            {` ${mangas[0].attributes?.release_date}`}
+          </div>
+
+          {/** Tags */}
+          <div className="flex flex-row gap-4">
+            {mangaSeries.attributes?.genres.map((genre) => (
+              <div key={genre}>
+                <GenreTag genre={genre} />
+              </div>
+            ))}
+          </div>
+
+          {/** Summary */}
+          <div className="text-base max-w-lg">
+            {`${mangaSeries.attributes?.summary}`}
+          </div>
+
+          <motion.button
+            className="w-52 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+            whileHover={{
+              scale: 0.9,
+            }}
+          >
+            Buy
+          </motion.button>
+
+          <Link href={`/mangas/${mangas[0].attributes?.slug}`}>
+            <motion.button
+              className="w-52 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
+              whileHover={{
+                scale: 0.9,
+              }}
+            >
+              View More
+            </motion.button>
+          </Link>
         </div>
       </section>
 
