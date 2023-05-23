@@ -121,7 +121,7 @@ export default function Header() {
                         Cart
                       </Link>
                       {cart.length > 0 ? (
-                        <div className="rounded-full h-2 w-2 bg-siteRed absolute -translate-y-5 translate-x-6"></div>
+                        <div className="rounded-full h-2 w-2 bg-siteRed absolute -translate-y-5 translate-x-7 md:translate-x-6"></div>
                       ) : (
                         <></>
                       )}

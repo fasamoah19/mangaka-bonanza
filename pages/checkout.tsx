@@ -8,7 +8,10 @@ import ZipCodeField from "@/components/form/ZipCodeField";
 import { useCartContext } from "@/context/CartContextProvider";
 import { getMangas, getRecommended } from "@/lib/custom-functions";
 import { Manga } from "@/lib/types";
-import { checkoutInitialValues, checkoutReducer } from "@/reducers/checkout_reducer";
+import {
+  checkoutInitialValues,
+  checkoutReducer,
+} from "@/reducers/checkout_reducer";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useReducer, useState } from "react";
@@ -28,7 +31,7 @@ export default function CheckoutPage() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentType>("apple-pay");
 
-  const [state, dispatch] = useReducer(checkoutReducer, checkoutInitialValues)
+  const [state, dispatch] = useReducer(checkoutReducer, checkoutInitialValues);
 
   /** Updates the total displayed on the page */
   const updateTotal = () => {
@@ -38,18 +41,22 @@ export default function CheckoutPage() {
       sum = sum + (manga.attributes?.price ?? 0);
     });
     let floatTax = parseFloat((sum * 0.06).toFixed(2));
-    let finalTax = floatTax.toString()
+    let finalTax = floatTax.toString();
     if (floatTax.toString().split(".").length > 1) {
-      finalTax = floatTax.toString().split(".")[1].length == 1
-      ? `${floatTax.toString()}0`
-      : floatTax.toString()
+      finalTax =
+        floatTax.toString().split(".")[1].length == 1
+          ? `${floatTax.toString()}0`
+          : floatTax.toString();
     }
 
-    dispatch({ type: 'update', payload: {
-      ...state,
-      tax: finalTax,
-      total: (sum + shipping + floatTax).toFixed(2).toString()
-    }})
+    dispatch({
+      type: "update",
+      payload: {
+        ...state,
+        tax: finalTax,
+        total: (sum + shipping + floatTax).toFixed(2).toString(),
+      },
+    });
   };
 
   /**
@@ -97,40 +104,69 @@ export default function CheckoutPage() {
         Checkout
       </div>
       {/** Checkout section */}
-      <section className="flex flex-row place-content-center">
-        <div className="flex flex-col place-items-center place-content-center">
+      <section className="flex flex-col md:flex-row md:place-content-center place-items-center">
+        <div className="flex flex-col md:place-items-center md:place-content-center">
           <form
             className="flex flex-col gap-y-12"
-            onSubmit={(event) => {event.preventDefault()}}
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
             id="order-form"
           >
             {/** Delivery information */}
-            <div className="flex flex-col gap-y-5 w-96">
+            <div className="flex flex-col gap-y-5 w-72 md:w-96">
               <div className="flex flex-row font-libreFranklin text-xl text-siteGray">
                 Delivery Information
               </div>
               {/** Name */}
-              <InputFieldLong placeholder="Name" state={state} dispatch={dispatch} updateField="deliveryName" />
+              <InputFieldLong
+                placeholder="Name"
+                state={state}
+                dispatch={dispatch}
+                updateField="deliveryName"
+              />
 
               {/** Address 1 */}
-              <InputFieldLong placeholder="Address 1" state={state} dispatch={dispatch} updateField="deliveryAddress" />
+              <InputFieldLong
+                placeholder="Address 1"
+                state={state}
+                dispatch={dispatch}
+                updateField="deliveryAddress"
+              />
 
               {/** Address 2 */}
-              <InputFieldLong placeholder="Address 2" state={state} dispatch={dispatch} updateField="deliveryAddressTwo" />
+              <InputFieldLong
+                placeholder="Address 2"
+                state={state}
+                dispatch={dispatch}
+                updateField="deliveryAddressTwo"
+              />
 
               {/** City and Zip */}
-              <div className="flex flex-row place-content-start w-full">
-                <CityField state={state} dispatch={dispatch} updateField="deliveryCity" />
+              <div className="flex flex-row place-content-start md:w-full">
+                <CityField
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="deliveryCity"
+                />
                 <div className="grow"></div>
-                <ZipCodeField state={state} dispatch={dispatch} updateField="deliveryZipCode" />
+                <ZipCodeField
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="deliveryZipCode"
+                />
               </div>
 
               {/** State */}
-              <StateField state={state} dispatch={dispatch} updateField="deliveryState" />
+              <StateField
+                state={state}
+                dispatch={dispatch}
+                updateField="deliveryState"
+              />
             </div>
 
             {/** Payment */}
-            <div className="flex flex-col gap-y-5 w-96">
+            <div className="flex flex-col gap-y-5 w-72 md:w-96">
               <div className="flex flex-row font-libreFranklin text-xl text-siteGray">
                 Payment
               </div>
@@ -188,22 +224,40 @@ export default function CheckoutPage() {
 
               {/** CC Payment Section */}
               {paymentType == "cc" ? (
-                <div className="flex flex-col gap-y-5 w-96">
+                <div className="flex flex-col gap-y-5 w-72 md:w-96">
                   {/** Name of card */}
-                  <InputFieldLong placeholder="Name on card" state={state} dispatch={dispatch} updateField="nameOnCard"  />
+                  <InputFieldLong
+                    placeholder="Name on card"
+                    state={state}
+                    dispatch={dispatch}
+                    updateField="nameOnCard"
+                  />
 
                   {/** Credit Card # */}
-                  <InputFieldLong placeholder="Credit Card #" state={state} dispatch={dispatch} updateField="ccNumber"  />
+                  <InputFieldLong
+                    placeholder="Credit Card #"
+                    state={state}
+                    dispatch={dispatch}
+                    updateField="ccNumber"
+                  />
 
                   <div className="grid grid-cols-3 place-items-star gap-3">
                     {/** CVV */}
-                    <CvvField state={state} dispatch={dispatch} updateField="cvv" />
+                    <CvvField
+                      state={state}
+                      dispatch={dispatch}
+                      updateField="cvv"
+                    />
 
                     {/** Expiry Date */}
                     <ExpiryDateFields state={state} dispatch={dispatch} />
                   </div>
 
-                  <ZipCodeField state={state} dispatch={dispatch} updateField="cardZipCode" />
+                  <ZipCodeField
+                    state={state}
+                    dispatch={dispatch}
+                    updateField="cardZipCode"
+                  />
                 </div>
               ) : (
                 <></>
@@ -212,28 +266,55 @@ export default function CheckoutPage() {
 
             {/** CC Billing Information */}
             {paymentType == "cc" ? (
-              <div className="flex flex-col gap-y-5 w-96">
+              <div className="flex flex-col gap-y-5 w-72 md:w-96">
                 <div className="flex flex-row font-libreFranklin text-xl text-siteGray">
                   Billing Information
                 </div>
                 {/** Name */}
-                <InputFieldLong placeholder="Name" state={state} dispatch={dispatch} updateField="billingName" />
+                <InputFieldLong
+                  placeholder="Name"
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="billingName"
+                />
 
                 {/** Address 1 */}
-                <InputFieldLong placeholder="Address 1" state={state} dispatch={dispatch} updateField="billingAddress" />
+                <InputFieldLong
+                  placeholder="Address 1"
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="billingAddress"
+                />
 
                 {/** Address 2 */}
-                <InputFieldLong placeholder="Address 2" state={state} dispatch={dispatch} updateField="billingAddressTwo" />
+                <InputFieldLong
+                  placeholder="Address 2"
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="billingAddressTwo"
+                />
 
                 {/** City and Zip */}
-                <div className="flex flex-row place-content-start w-full">
-                  <CityField state={state} dispatch={dispatch} updateField="billingCity" />
+                <div className="flex flex-row place-content-start w-72 md:w-full">
+                  <CityField
+                    state={state}
+                    dispatch={dispatch}
+                    updateField="billingCity"
+                  />
                   <div className="grow"></div>
-                  <ZipCodeField state={state} dispatch={dispatch} updateField="billingZipCode" />
+                  <ZipCodeField
+                    state={state}
+                    dispatch={dispatch}
+                    updateField="billingZipCode"
+                  />
                 </div>
 
                 {/** State */}
-                <StateField state={state} dispatch={dispatch} updateField="billingState" />
+                <StateField
+                  state={state}
+                  dispatch={dispatch}
+                  updateField="billingState"
+                />
               </div>
             ) : (
               <></>
@@ -241,10 +322,35 @@ export default function CheckoutPage() {
           </form>
         </div>
 
-        <div className="grow"></div>
+        <div className="grow pb-6 md:pb-0"></div>
 
         {/** Order Box */}
         <OrderSummary mangas={mangas} tax={state.tax} total={state.total} />
+
+        {/** Buttons */}
+        <div className="flex-col flex mt-8 gap-y-6">
+          <motion.button
+            className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+            type="submit"
+            form="order-form"
+            whileHover={{
+              scale: 0.9,
+            }}
+          >
+            Purchase
+          </motion.button>
+
+          <Link href={"/cart"}>
+            <motion.button
+              className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
+              whileHover={{
+                scale: 0.9,
+              }}
+            >
+              Back To Cart
+            </motion.button>
+          </Link>
+        </div>
       </section>
 
       {/* <SectionDivider /> */}
