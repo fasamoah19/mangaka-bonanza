@@ -18,7 +18,7 @@ type InputFieldLongProps = {
 export default function InputFieldLong(props : InputFieldLongProps) {
   const { state, dispatch, updateField, ...htmlAttributes } = props
   return (
-    <div className="flex flex-row bg-inputBg place-items-center h-8 w-full">
+    <div className="flex flex-row bg-inputBg place-items-center h-8 w-72 md:w-full">
       <input
         {...htmlAttributes}
         type="text"

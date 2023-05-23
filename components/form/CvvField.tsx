@@ -15,7 +15,7 @@ type CvvFieldProps = {
  */
 export default function CvvField({ state, dispatch, updateField} : CvvFieldProps) {
   return (
-    <div className="flex flex-row bg-inputBg place-items-center h-8 w-24">
+    <div className="flex flex-row bg-inputBg place-items-center h-8 w-16 md:w-24">
       <input
         type="password"
         maxLength={4}

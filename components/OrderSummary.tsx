@@ -24,7 +24,7 @@ export default function OrderSummary({ mangas, tax, total }: OrderSummaryProps )
         {mangas.length == 0 ? (
           <div>No manga was added to the cart</div>
         ) : (
-          <div className="flex flex-col bg-white p-6 gap-y-2 w-80">
+          <div className="flex flex-col bg-white p-6 md:gap-y-2 gap-y-6 w-60 md:w-80">
             {mangas.map((manga) => (
               <div className="flex flex-row" key={manga.id}>
                 <div className="font-libreFranklin text-sm">
@@ -63,31 +63,6 @@ export default function OrderSummary({ mangas, tax, total }: OrderSummaryProps )
             </div>
           </div>
         )}
-      </div>
-
-      {/** Buttons */}
-      <div className="flex-col flex mt-8 gap-y-6">
-        <motion.button
-          className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
-          type="submit"
-          form="order-form"
-          whileHover={{
-            scale: 0.9,
-          }}
-        >
-          Purchase
-        </motion.button>
-
-        <Link href={"/cart"}>
-          <motion.button
-            className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
-            whileHover={{
-              scale: 0.9,
-            }}
-          >
-            Back To Cart
-          </motion.button>
-        </Link>
       </div>
     </div>
   );

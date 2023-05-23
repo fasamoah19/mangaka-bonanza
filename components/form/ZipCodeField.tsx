@@ -15,7 +15,7 @@ type ZipCodeFieldProps = {
  */
 export default function ZipCodeField({ state, dispatch, updateField } : ZipCodeFieldProps) {
   return (
-    <div className="flex flex-row bg-inputBg place-items-center h-8 w-28">
+    <div className="flex flex-row bg-inputBg place-items-center h-8 w-20 md:w-28">
       <input
         type="text"
         maxLength={5}
