@@ -1,6 +1,7 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
+import Tooltip from "@/components/Tooltip";
 import { strapiFetch } from "@/lib/custom-functions";
 import { Manga, MangaSeries } from "@/lib/types";
 import { motion } from "framer-motion";
@@ -133,12 +134,14 @@ export default function MangaSeriesPage({
 
             {/** Author Name */}
             <div className="text-xl">
-              <Link
-                href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
-              >
-                <b>Author:</b>{" "}
-                {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
-              </Link>
+              <Tooltip label="Click to view mangaka">
+                <Link
+                  href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
+                >
+                  <b>Author:</b>{" "}
+                  {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+                </Link>
+              </Tooltip>
             </div>
 
             {/** Release Date */}

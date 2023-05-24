@@ -5,6 +5,7 @@ import { genres } from "@/lib/constants";
 import HamburgerMenu from "./icons/HamburgerMenu";
 import { useEffect, useState } from "react";
 import useFetchScrollY from "@/hooks/useFetchScrollY";
+import Tooltip from "./Tooltip";
 
 /**
  * Sticky Header component
@@ -47,17 +48,14 @@ export default function Header() {
         <div className="grow"></div> {/** Spacer */}
         <nav className="hidden md:flex space-x-4">
           <ul className="flex flex-row space-x-6 place-items-center">
-            <li>
-              <Link className="text-sm font-semibold text-gray-600" href="/">
-                Home
-              </Link>
-              <span
-                className="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
-    -translate-x-1/2 translate-y-1/3 opacity-0 m-4 mx-auto"
-              >
-                Tooltip
-              </span>
-            </li>
+            <Tooltip label="Home Page">
+              <li>
+                <Link className="text-sm font-semibold text-gray-600" href="/">
+                  Home
+                </Link>
+              </li>
+            </Tooltip>
+
             <li className="group place-content-center">
               <div className="text-sm font-semibold text-gray-600 pt-0.5 cursor-pointer">
                 Genres
@@ -65,19 +63,22 @@ export default function Header() {
               {/** List of genres in the hidden menu. Menu displays on hover */}
               <GenresDropDownMenu />
             </li>
-            <li>
-              <Link
-                href="/cart"
-                className="text-sm font-semibold text-gray-600"
-              >
-                Cart
-              </Link>
-              {cart.length > 0 ? (
-                <div className="rounded-full h-2 w-2 bg-siteRed absolute -translate-y-5 translate-x-6"></div>
-              ) : (
-                <></>
-              )}
-            </li>
+
+            <Tooltip label="Your Cart">
+              <li>
+                <Link
+                  href="/cart"
+                  className="text-sm font-semibold text-gray-600"
+                >
+                  Cart
+                </Link>
+                {cart.length > 0 ? (
+                  <div className="rounded-full h-2 w-2 bg-siteRed absolute -translate-y-5 translate-x-6"></div>
+                ) : (
+                  <></>
+                )}
+              </li>
+            </Tooltip>
           </ul>
 
           <UserIcon />
@@ -113,11 +114,7 @@ export default function Header() {
                         Genres
                       </div>
                       {/** List of genres in the hidden menu. Menu displays on click/tap of Genres list item */}
-                      {showMobileGenreMenu ? (
-                        <GenresDropDownMenu />
-                      ) : (
-                        <></>
-                      )}
+                      {showMobileGenreMenu ? <GenresDropDownMenu /> : <></>}
                     </li>
                     <li onClick={closeMenus}>
                       <Link
@@ -147,7 +144,7 @@ export default function Header() {
 
 /**
  * Component for Genre dropdown menu
- * 
+ *
  * @returns GenresDropDownMenu component
  */
 const GenresDropDownMenu = () => {

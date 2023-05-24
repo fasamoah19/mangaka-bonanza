@@ -1,19 +1,20 @@
 import { MangaSeries } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import Tooltip from "./Tooltip";
 
 /** Props necessary for the component */
 type SeriesItemProps = {
-  singleSeries: MangaSeries
-}
+  singleSeries: MangaSeries;
+};
 
 /**
  * Single series object that is displayed in the SeriesGrid
- * 
+ *
  * @param param0 SeriesItemProps
  * @returns SeriesItem component
  */
-export default function SeriesItem({ singleSeries } : SeriesItemProps) {
+export default function SeriesItem({ singleSeries }: SeriesItemProps) {
   return (
     <Link
       href={`/series/${singleSeries.attributes?.slug}`}
@@ -33,10 +34,14 @@ export default function SeriesItem({ singleSeries } : SeriesItemProps) {
             }
           />
           <div className="flex flex-col py-5 text-sm px-2 space-y-2">
-            <div className="text-sm font-semibold">
-              {singleSeries.attributes?.name}
-            </div>
-            <div className="text-xs">{`By: ${singleSeries.attributes?.mangaka?.data.attributes?.name}`}</div>
+            <Tooltip label="View series" decreaseY>
+              <div className="text-sm font-semibold">
+                {singleSeries.attributes?.name}
+              </div>
+            </Tooltip>
+            <Tooltip label="View mangaka" decreaseY>
+              <div className="text-xs">{`By: ${singleSeries.attributes?.mangaka?.data.attributes?.name}`}</div>
+            </Tooltip>
           </div>
         </div>
       </div>
