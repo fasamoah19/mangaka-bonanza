@@ -2,6 +2,7 @@ import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import MangaGrid from "@/components/MangaGrid";
 import ReviewItem from "@/components/ReviewItem";
+import Tooltip from "@/components/Tooltip";
 import StarIcon from "@/components/icons/StarIcon";
 import { strapiFetch } from "@/lib/custom-functions";
 import { Manga } from "@/lib/types";
@@ -132,22 +133,26 @@ export default function SelectedMangaPage({
             {manga.attributes?.name}
           </div>
           {/** Author */}
-          <Link
-            href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
-          >
-            <div className="text-base md:text-xl">
-              <b>Author:</b>
-              {` ${manga.attributes?.mangaka.data.attributes?.name}`}
-            </div>
-          </Link>
+          <Tooltip label="View mangaka">
+            <Link
+              href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+            >
+              <div className="text-base md:text-xl">
+                <b>Author:</b>
+                {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+              </div>
+            </Link>
+          </Tooltip>
 
           {/** Series Name */}
-          <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
-            <div className="text-base md:text-xl">
-              <b>Series Name:</b>
-              {` ${manga.attributes?.series_name}`}
-            </div>
-          </Link>
+          <Tooltip label="View manga series">
+            <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
+              <div className="text-base md:text-xl">
+                <b>Series Name:</b>
+                {` ${manga.attributes?.series_name}`}
+              </div>
+            </Link>
+          </Tooltip>
 
           {/** Release Date */}
           <div className="text-base md:text-xl">
@@ -206,22 +211,26 @@ export default function SelectedMangaPage({
               {manga.attributes?.name}
             </div>
             {/** Author */}
-            <Link
-              href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
-            >
-              <div className="text-xl">
-                <b>Author:</b>
-                {` ${manga.attributes?.mangaka.data.attributes?.name}`}
-              </div>
-            </Link>
+            <Tooltip label="View mangaka">
+              <Link
+                href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+              >
+                <div className="text-xl">
+                  <b>Author:</b>
+                  {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+                </div>
+              </Link>
+            </Tooltip>
 
             {/** Series Name */}
-            <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
-              <div className="text-xl">
-                <b>Series Name:</b>
-                {` ${manga.attributes?.series_name}`}
-              </div>
-            </Link>
+            <Tooltip label="View manga series">
+              <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
+                <div className="text-xl">
+                  <b>Series Name:</b>
+                  {` ${manga.attributes?.series_name}`}
+                </div>
+              </Link>
+            </Tooltip>
 
             {/** Release Date */}
             <div className="text-xl">

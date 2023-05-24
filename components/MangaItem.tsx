@@ -10,6 +10,7 @@ import {
   useCartContext,
   useSetCartContext,
 } from "@/context/CartContextProvider";
+import Tooltip from "./Tooltip";
 
 /** Props necessary for the component */
 type MangaItemProps = {
@@ -44,14 +45,21 @@ export default function MangaItem({ manga }: MangaItemProps) {
 
       {/** Manga Information */}
       <div className="flex flex-col py-5 text-sm px-2 space-y-2">
-        <Link href={`/mangas/${manga.attributes?.slug}`}>
-          <div className="text-sm font-semibold">{manga.attributes?.name}</div>
-        </Link>
-        <Link
-          href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
-        >
-          <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
-        </Link>
+        <Tooltip label="View manga details" decreaseY={true}>
+          <Link href={`/mangas/${manga.attributes?.slug}`}>
+            <div className="text-sm font-semibold">
+              {manga.attributes?.name}
+            </div>
+          </Link>
+        </Tooltip>
+
+        <Tooltip label="View mangaka" decreaseY={true}>
+          <Link
+            href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+          >
+            <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
+          </Link>
+        </Tooltip>
 
         <div className="font-semibold text-xs">
           {manga.attributes?.price ? `$${manga.attributes?.price}` : ""}
@@ -69,33 +77,48 @@ export default function MangaItem({ manga }: MangaItemProps) {
       {/** Buttons */}
       {manga.attributes?.in_print ? (
         <div className="flex flex-row">
-          <motion.button
-            layout
-            className="flex w-1/2 h-7 bg-siteRed place-content-center place-items-center"
-            whileHover={{
-              scale: 1.05,
-            }}
-            whileTap={{ scale: 0.9 }}
-            onClick={(event) => {
-              event.preventDefault();
-              let newCart = [...cart, manga.id];
-              if (cart.includes(manga.id)) {
-                newCart = cart.filter((id) => id !== manga.id);
-              }
-              setCart(newCart);
-            }}
+          <Tooltip
+            label="Add to cart"
+            width="w-1/2"
+            height="h-7"
+            display="flex"
           >
-            {cart.includes(manga.id) ? <RemoveFromCartIcon /> : <CartIcon />}
-          </motion.button>
-          <motion.button
-            className="flex w-1/2 h-7 bg-siteLightGray place-content-center place-items-center"
-            whileHover={{
-              scale: 1.05,
-            }}
-            whileTap={{ scale: 0.9 }}
+            <motion.button
+              layout
+              className="flex w-full h-full bg-siteRed place-content-center place-items-center"
+              whileHover={{
+                scale: 1.05,
+              }}
+              whileTap={{ scale: 0.9 }}
+              onClick={(event) => {
+                event.preventDefault();
+                let newCart = [...cart, manga.id];
+                if (cart.includes(manga.id)) {
+                  newCart = cart.filter((id) => id !== manga.id);
+                }
+                setCart(newCart);
+              }}
+            >
+              {cart.includes(manga.id) ? <RemoveFromCartIcon /> : <CartIcon />}
+            </motion.button>
+          </Tooltip>
+
+          <Tooltip
+            label="Add to bookmarks"
+            width="w-1/2"
+            height="h-7"
+            display="flex"
           >
-            <BookmarkIcon />
-          </motion.button>
+            <motion.button
+              className="flex w-full h-full bg-siteLightGray place-content-center place-items-center"
+              whileHover={{
+                scale: 1.05,
+              }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <BookmarkIcon />
+            </motion.button>
+          </Tooltip>
         </div>
       ) : (
         <></>

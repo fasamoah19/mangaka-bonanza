@@ -6,6 +6,7 @@ import SectionDivider from "@/components/Divider";
 import MangaItem from "@/components/MangaItem";
 import qs from "qs";
 import { strapiFetch } from "@/lib/custom-functions";
+import Tooltip from "@/components/Tooltip";
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
@@ -87,31 +88,34 @@ export default function Home({
         {/** Filter Tags */}
         <div className="md:flex md:flex-row md:justify-between hidden">
           {filterTags.map((filter) => (
-            <div
-              className="font-libreFranklin text-base hover:cursor-pointer"
-              key={filter}
-              onClick={() => setHighlightFilter(filter)}
-              style={{
-                color: highlightFilter == filter ? "#D21416" : "#787878",
-              }}
-            >
-              {filter}
-            </div>
+            <Tooltip label={`${filter} Manga`}>
+              <div
+                className="font-libreFranklin text-base hover:cursor-pointer"
+                key={filter}
+                onClick={() => setHighlightFilter(filter)}
+                style={{
+                  color: highlightFilter == filter ? "#D21416" : "#787878",
+                }}
+              >
+                {filter}
+              </div>
+            </Tooltip>
           ))}
         </div>
 
         <div className="flex flex-row justify-between md:hidden">
           {filterTags.slice(0, 3).map((filter) => (
-            <div
-              className="font-libreFranklin text-base hover:cursor-pointer"
-              key={filter}
-              onClick={() => setHighlightFilter(filter)}
-              style={{
-                color: highlightFilter == filter ? "#D21416" : "#787878",
-              }}
-            >
-              {filter}
-            </div>
+            <Tooltip label={`${filter} Manga`} key={filter}>
+              <div
+                className="font-libreFranklin text-base hover:cursor-pointer"
+                onClick={() => setHighlightFilter(filter)}
+                style={{
+                  color: highlightFilter == filter ? "#D21416" : "#787878",
+                }}
+              >
+                {filter}
+              </div>
+            </Tooltip>
           ))}
         </div>
 
