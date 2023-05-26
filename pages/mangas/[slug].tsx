@@ -1,5 +1,6 @@
 import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
+import HeadComponent from "@/components/HeadComponent";
 import MangaGrid from "@/components/MangaGrid";
 import ReviewItem from "@/components/ReviewItem";
 import Tooltip from "@/components/Tooltip";
@@ -113,99 +114,28 @@ export default function SelectedMangaPage({
       "Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante.",
   };
   return (
-    <div className="flex flex-col">
-      {/** Selected Manga Information Section */}
-      <section className="flex flex-col md:flex-row pt-16 md:mx-auto">
-        {/** Mobile Design */}
-        <div className="flex flex-col md:hidden gap-y-5 place-items-center">
-          <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-              manga.attributes?.image.data.attributes?.url
-            }`}
-            className="object-cover"
-            height={536}
-            width={360}
-            alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
-          />
+    <>
+      <HeadComponent
+        title={`${manga.attributes?.name} | Mangaka Bonanza`}
+        description={`${manga.attributes?.summary.substring(0, 140)}...`}
+      />
+      <div className="flex flex-col">
+        {/** Selected Manga Information Section */}
+        <section className="flex flex-col md:flex-row pt-16 md:mx-auto">
+          {/** Mobile Design */}
+          <div className="flex flex-col md:hidden gap-y-5 place-items-center">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
+                manga.attributes?.image.data.attributes?.url
+              }`}
+              className="object-cover"
+              height={536}
+              width={360}
+              alt={
+                manga.attributes?.image.data.attributes?.alternativeText ?? ""
+              }
+            />
 
-          {/** Title */}
-          <div className="text-4xl leading-none text-black">
-            {manga.attributes?.name}
-          </div>
-          {/** Author */}
-          <Tooltip label="View mangaka">
-            <Link
-              href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
-            >
-              <div className="text-base md:text-xl">
-                <b>Author:</b>
-                {` ${manga.attributes?.mangaka.data.attributes?.name}`}
-              </div>
-            </Link>
-          </Tooltip>
-
-          {/** Series Name */}
-          <Tooltip label="View manga series">
-            <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
-              <div className="text-base md:text-xl">
-                <b>Series Name:</b>
-                {` ${manga.attributes?.series_name}`}
-              </div>
-            </Link>
-          </Tooltip>
-
-          {/** Release Date */}
-          <div className="text-base md:text-xl">
-            <b>Release Date:</b>
-            {` ${manga.attributes?.release_date}`}
-          </div>
-
-          {/** Rating */}
-          <div className="text-base md:text-xl flex flex-row place-items-center gap-x-2">
-            <b>Rating: </b>
-            <div className="flex flex-row gap-x-1">
-              {Array.from(Array(4).keys()).map((_, index) => (
-                <div key={`${manga.attributes?.name}-${index}`}>
-                  <StarIcon />
-                </div>
-              ))}
-            </div>
-            <div className="text-sm text-siteGray">(28)</div>
-          </div>
-
-          {/** Tags */}
-          <div className="flex flex-row gap-4">
-            {manga.attributes?.genres.map((genre) => (
-              <div key={genre}>
-                <GenreTag genre={genre} />
-              </div>
-            ))}
-          </div>
-
-          {/** Summary */}
-          <div className="text-base max-w-lg">
-            {`${manga.attributes?.summary}`}
-          </div>
-
-          <motion.button
-            className="h-14 w-52 bg-siteRed text-white font-libreFranklin font-semibold"
-            whileHover={{ scale: 0.9 }}
-          >
-            Buy
-          </motion.button>
-
-          <motion.button
-            className="h-14 w-52 bg-siteLightGray text-black font-libreFranklin font-semibold"
-            whileHover={{ scale: 0.9 }}
-          >
-            Bookmark
-          </motion.button>
-        </div>
-
-        {/** Desktop Design */}
-        <div className="hidden md:flex md:flex-row">
-          {/** Manga Information  */}
-          <div className="hidden md:flex md:flex-col gap-y-7">
             {/** Title */}
             <div className="text-4xl leading-none text-black">
               {manga.attributes?.name}
@@ -215,7 +145,7 @@ export default function SelectedMangaPage({
               <Link
                 href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
               >
-                <div className="text-xl">
+                <div className="text-base md:text-xl">
                   <b>Author:</b>
                   {` ${manga.attributes?.mangaka.data.attributes?.name}`}
                 </div>
@@ -225,7 +155,7 @@ export default function SelectedMangaPage({
             {/** Series Name */}
             <Tooltip label="View manga series">
               <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
-                <div className="text-xl">
+                <div className="text-base md:text-xl">
                   <b>Series Name:</b>
                   {` ${manga.attributes?.series_name}`}
                 </div>
@@ -233,13 +163,13 @@ export default function SelectedMangaPage({
             </Tooltip>
 
             {/** Release Date */}
-            <div className="text-xl">
+            <div className="text-base md:text-xl">
               <b>Release Date:</b>
               {` ${manga.attributes?.release_date}`}
             </div>
 
             {/** Rating */}
-            <div className="text-xl flex flex-row place-items-center gap-x-2">
+            <div className="text-base md:text-xl flex flex-row place-items-center gap-x-2">
               <b>Rating: </b>
               <div className="flex flex-row gap-x-1">
                 {Array.from(Array(4).keys()).map((_, index) => (
@@ -261,90 +191,171 @@ export default function SelectedMangaPage({
             </div>
 
             {/** Summary */}
-            <div className="text-lg max-w-lg">
+            <div className="text-base max-w-lg">
               {`${manga.attributes?.summary}`}
             </div>
-          </div>
 
-          {/** Spacer */}
-          <div className="hidden md:flex md:w-48 lg:w-64"></div>
-          {/** Image and buttons */}
-          <div className="hidden md:flex md:flex-col gap-y-5">
-            <Image
-              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                manga.attributes?.image.data.attributes?.url
-              }`}
-              className="object-cover"
-              height={536}
-              width={360}
-              alt={
-                manga.attributes?.image.data.attributes?.alternativeText ?? ""
-              }
-            />
             <motion.button
-              className="h-14 bg-siteRed text-white font-libreFranklin font-semibold"
+              className="h-14 w-52 bg-siteRed text-white font-libreFranklin font-semibold"
               whileHover={{ scale: 0.9 }}
             >
               Buy
             </motion.button>
 
             <motion.button
-              className="h-14 bg-siteLightGray text-black font-libreFranklin font-semibold"
+              className="h-14 w-52 bg-siteLightGray text-black font-libreFranklin font-semibold"
               whileHover={{ scale: 0.9 }}
             >
               Bookmark
             </motion.button>
           </div>
-        </div>
-      </section>
 
-      <SectionDivider />
+          {/** Desktop Design */}
+          <div className="hidden md:flex md:flex-row">
+            {/** Manga Information  */}
+            <div className="hidden md:flex md:flex-col gap-y-7">
+              {/** Title */}
+              <div className="text-4xl leading-none text-black">
+                {manga.attributes?.name}
+              </div>
+              {/** Author */}
+              <Tooltip label="View mangaka">
+                <Link
+                  href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+                >
+                  <div className="text-xl">
+                    <b>Author:</b>
+                    {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+                  </div>
+                </Link>
+              </Tooltip>
 
-      {/** Reviews Section */}
-      <section className="flex flex-col">
-        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed pb-16">
-          Reviews
-        </div>
-        {/** Desktop Grid */}
-        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 md:place-items-center md:gap-y-16 md:gap-x-8 lg:gap-x-14">
-          {Array.from(Array(4).keys()).map((key) => (
-            <div key={key}>
-              <ReviewItem
-                reviewer={review.reviwer}
-                rating={review.rating}
-                title={review.title}
-                content={review.content}
-              />
+              {/** Series Name */}
+              <Tooltip label="View manga series">
+                <Link
+                  href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}
+                >
+                  <div className="text-xl">
+                    <b>Series Name:</b>
+                    {` ${manga.attributes?.series_name}`}
+                  </div>
+                </Link>
+              </Tooltip>
+
+              {/** Release Date */}
+              <div className="text-xl">
+                <b>Release Date:</b>
+                {` ${manga.attributes?.release_date}`}
+              </div>
+
+              {/** Rating */}
+              <div className="text-xl flex flex-row place-items-center gap-x-2">
+                <b>Rating: </b>
+                <div className="flex flex-row gap-x-1">
+                  {Array.from(Array(4).keys()).map((_, index) => (
+                    <div key={`${manga.attributes?.name}-${index}`}>
+                      <StarIcon />
+                    </div>
+                  ))}
+                </div>
+                <div className="text-sm text-siteGray">(28)</div>
+              </div>
+
+              {/** Tags */}
+              <div className="flex flex-row gap-4">
+                {manga.attributes?.genres.map((genre) => (
+                  <div key={genre}>
+                    <GenreTag genre={genre} />
+                  </div>
+                ))}
+              </div>
+
+              {/** Summary */}
+              <div className="text-lg max-w-lg">
+                {`${manga.attributes?.summary}`}
+              </div>
             </div>
-          ))}
-        </div>
-        {/** Mobile Grid */}
-        <div className="grid grid-cols-1 place-items-center gap-y-16 md:hidden">
-          {Array.from(Array(2).keys()).map((key) => (
-            <div key={key}>
-              <ReviewItem
-                reviewer={review.reviwer}
-                rating={review.rating}
-                title={review.title}
-                content={review.content}
+
+            {/** Spacer */}
+            <div className="hidden md:flex md:w-48 lg:w-64"></div>
+            {/** Image and buttons */}
+            <div className="hidden md:flex md:flex-col gap-y-5">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
+                  manga.attributes?.image.data.attributes?.url
+                }`}
+                className="object-cover"
+                height={536}
+                width={360}
+                alt={
+                  manga.attributes?.image.data.attributes?.alternativeText ?? ""
+                }
               />
+              <motion.button
+                className="h-14 bg-siteRed text-white font-libreFranklin font-semibold"
+                whileHover={{ scale: 0.9 }}
+              >
+                Buy
+              </motion.button>
+
+              <motion.button
+                className="h-14 bg-siteLightGray text-black font-libreFranklin font-semibold"
+                whileHover={{ scale: 0.9 }}
+              >
+                Bookmark
+              </motion.button>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <SectionDivider />
+        <SectionDivider />
 
-      {/** Similar Titles Section */}
-      {similarTitles.length > 0 ? (
-        <MangaGrid
-          gridTitle="Similar Titles"
-          mangas={similarTitles}
-          titleColor={"text-siteGray"}
-        />
-      ) : (
-        <></>
-      )}
-    </div>
+        {/** Reviews Section */}
+        <section className="flex flex-col">
+          <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed pb-16">
+            Reviews
+          </div>
+          {/** Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 md:place-items-center md:gap-y-16 md:gap-x-8 lg:gap-x-14">
+            {Array.from(Array(4).keys()).map((key) => (
+              <div key={key}>
+                <ReviewItem
+                  reviewer={review.reviwer}
+                  rating={review.rating}
+                  title={review.title}
+                  content={review.content}
+                />
+              </div>
+            ))}
+          </div>
+          {/** Mobile Grid */}
+          <div className="grid grid-cols-1 place-items-center gap-y-16 md:hidden">
+            {Array.from(Array(2).keys()).map((key) => (
+              <div key={key}>
+                <ReviewItem
+                  reviewer={review.reviwer}
+                  rating={review.rating}
+                  title={review.title}
+                  content={review.content}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <SectionDivider />
+
+        {/** Similar Titles Section */}
+        {similarTitles.length > 0 ? (
+          <MangaGrid
+            gridTitle="Similar Titles"
+            mangas={similarTitles}
+            titleColor={"text-siteGray"}
+          />
+        ) : (
+          <></>
+        )}
+      </div>
+    </>
   );
 }

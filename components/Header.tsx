@@ -48,13 +48,13 @@ export default function Header() {
         <div className="grow"></div> {/** Spacer */}
         <nav className="hidden md:flex space-x-4">
           <ul className="flex flex-row space-x-6 place-items-center">
-            <Tooltip label="Home Page">
-              <li>
+            <li>
+              <Tooltip label="Home Page">
                 <Link className="text-sm font-semibold text-gray-600" href="/">
                   Home
                 </Link>
-              </li>
-            </Tooltip>
+              </Tooltip>
+            </li>
 
             <li className="group place-content-center">
               <div className="text-sm font-semibold text-gray-600 pt-0.5 cursor-pointer">
@@ -64,8 +64,8 @@ export default function Header() {
               <GenresDropDownMenu />
             </li>
 
-            <Tooltip label="Your Cart">
-              <li>
+            <li>
+              <Tooltip label="Your Cart">
                 <Link
                   href="/cart"
                   className="text-sm font-semibold text-gray-600"
@@ -77,8 +77,8 @@ export default function Header() {
                 ) : (
                   <></>
                 )}
-              </li>
-            </Tooltip>
+              </Tooltip>
+            </li>
           </ul>
 
           <UserIcon />
