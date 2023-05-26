@@ -88,10 +88,9 @@ export default function Home({
         {/** Filter Tags */}
         <div className="md:flex md:flex-row md:justify-between hidden">
           {filterTags.map((filter) => (
-            <Tooltip label={`${filter} Manga`}>
+            <Tooltip label={`${filter} Manga`} key={filter}>
               <div
                 className="font-libreFranklin text-base hover:cursor-pointer"
-                key={filter}
                 onClick={() => setHighlightFilter(filter)}
                 style={{
                   color: highlightFilter == filter ? "#D21416" : "#787878",
