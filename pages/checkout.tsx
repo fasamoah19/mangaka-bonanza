@@ -326,31 +326,6 @@ export default function CheckoutPage() {
 
         {/** Order Box */}
         <OrderSummary mangas={mangas} tax={state.tax} total={state.total} />
-
-        {/** Buttons */}
-        <div className="flex-col flex mt-8 gap-y-6">
-          <motion.button
-            className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
-            type="submit"
-            form="order-form"
-            whileHover={{
-              scale: 0.9,
-            }}
-          >
-            Purchase
-          </motion.button>
-
-          <Link href={"/cart"}>
-            <motion.button
-              className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
-              whileHover={{
-                scale: 0.9,
-              }}
-            >
-              Back To Cart
-            </motion.button>
-          </Link>
-        </div>
       </section>
 
       {/* <SectionDivider /> */}

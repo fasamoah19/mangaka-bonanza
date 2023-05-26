@@ -4,18 +4,22 @@ import Link from "next/link";
 
 /** Props necessary for component */
 type OrderSummaryProps = {
-  mangas: Manga[],
+  mangas: Manga[];
   tax: string;
   total: string;
-}
+};
 
 /**
  * Custom component that displays the summary of the users order
- * 
+ *
  * @param param0 OrderSummaryProps
  * @returns OrderSummary component
  */
-export default function OrderSummary({ mangas, tax, total }: OrderSummaryProps ) {
+export default function OrderSummary({
+  mangas,
+  tax,
+  total,
+}: OrderSummaryProps) {
   return (
     <div className="flex flex-col place-items-center">
       {/** Order box */}
@@ -41,9 +45,7 @@ export default function OrderSummary({ mangas, tax, total }: OrderSummaryProps )
               <div className="flex flex-row">
                 <div className="font-libreFranklin text-sm">Tax</div>
                 <div className="grow"></div>
-                <div className="font-libreFranklin text-sm">
-                  {`$${tax}`}
-                </div>
+                <div className="font-libreFranklin text-sm">{`$${tax}`}</div>
               </div>
               <div className="flex flex-row">
                 <div className="font-libreFranklin text-sm">Shipping</div>
@@ -63,6 +65,31 @@ export default function OrderSummary({ mangas, tax, total }: OrderSummaryProps )
             </div>
           </div>
         )}
+      </div>
+
+      {/** Buttons */}
+      <div className="flex-col flex mt-8 gap-y-6">
+        <motion.button
+          className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+          type="submit"
+          form="order-form"
+          whileHover={{
+            scale: 0.9,
+          }}
+        >
+          Purchase
+        </motion.button>
+
+        <Link href={"/cart"}>
+          <motion.button
+            className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
+            whileHover={{
+              scale: 0.9,
+            }}
+          >
+            Back To Cart
+          </motion.button>
+        </Link>
       </div>
     </div>
   );
