@@ -33,13 +33,15 @@ export default function MangaItem({ manga }: MangaItemProps) {
     <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
       {/** Manga Cover */}
       <Link href={`/mangas/${manga.attributes?.slug}`}>
-        {" "}
         {/* TODO: Navigate to selected manga page */}
         <motion.img
           src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
             manga.attributes?.image.data.attributes?.url
           }`}
           className="w-52 h-72"
+          height={'288px'}
+          width={'208px'}
+          alt={`${manga.attributes?.image.data.attributes?.alternativeText}`}
         />
       </Link>
 
@@ -70,7 +72,7 @@ export default function MangaItem({ manga }: MangaItemProps) {
               <StarIcon />
             </div>
           ))}
-          <div className="text-xs">(28)</div>
+          <div className="text-xs text-black">(28)</div>
         </div>
       </div>
 
@@ -85,6 +87,8 @@ export default function MangaItem({ manga }: MangaItemProps) {
           >
             <motion.button
               layout
+              id={`${manga.attributes.name}-checkout-button`}
+              aria-label={`${manga.attributes.name}-checkout-button`}
               className="flex w-full h-full bg-siteRed place-content-center place-items-center"
               whileHover={{
                 scale: 1.05,
@@ -110,6 +114,8 @@ export default function MangaItem({ manga }: MangaItemProps) {
             display="flex"
           >
             <motion.button
+              id={`${manga.attributes.name}-bookmark-button`}
+              aria-label={`${manga.attributes.name}-bookmark-button`}
               className="flex w-full h-full bg-siteLightGray place-content-center place-items-center"
               whileHover={{
                 scale: 1.05,

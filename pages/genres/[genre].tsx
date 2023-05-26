@@ -1,3 +1,4 @@
+import HeadComponent from "@/components/HeadComponent";
 import SeriesGrid from "@/components/SeriesGrid";
 import { strapiFetch } from "@/lib/custom-functions";
 import { MangaSeries } from "@/lib/types";
@@ -6,7 +7,7 @@ import qs from "qs";
 
 /**
  * Retrieves all the manga by a selected genre
- * 
+ *
  * @param context GetServerSidePropsContext (used to retrieve the selected genre)
  * @returns Selected genre and the manga within that genre
  */
@@ -46,7 +47,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 /**
  * This page displays a grid of mangas by a selected genre
- * 
+ *
  * @param param0 ServerSideProps data
  * @returns SelectedGenre component
  */
@@ -55,10 +56,16 @@ export default function SelectedGenre({
   seriesList,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <div className="flex flex-col pb-8">
-      <div className="mt-16">
-        <SeriesGrid seriesList={seriesList} gridTitle={`${genre}`} />
+    <>
+      <HeadComponent
+        title={`Genre | Mangaka Bonanza`}
+        description={`All the manga within the ${genre} genre`}
+      />
+      <div className="flex flex-col pb-8">
+        <div className="mt-16">
+          <SeriesGrid seriesList={seriesList} gridTitle={`${genre}`} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import MangaItem from "@/components/MangaItem";
 import qs from "qs";
 import { strapiFetch } from "@/lib/custom-functions";
 import Tooltip from "@/components/Tooltip";
+import HeadComponent from "@/components/HeadComponent";
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
@@ -75,73 +76,76 @@ export default function Home({
   const [highlightFilter, setHighlightFilter] = useState<string>("New");
 
   return (
-    <div className="flex flex-col pb-8">
-      {/** Spotlight of the Week Hero */}
-      <SpotlightOfTheWeekHero manga={spotlightOfTheWeekManga} />
-      {/** Spotlight of the Week End */}
+    <>
+      <HeadComponent title="Home | Mangaka Bonanza" />
+      <div className="flex flex-col pb-8">
+        {/** Spotlight of the Week Hero */}
+        <SpotlightOfTheWeekHero manga={spotlightOfTheWeekManga} />
+        {/** Spotlight of the Week End */}
 
-      {/** Divider */}
-      <SectionDivider />
+        {/** Divider */}
+        <SectionDivider />
 
-      {/** Display Mangas Section */}
-      <section className="flex flex-col">
-        {/** Filter Tags */}
-        <div className="md:flex md:flex-row md:justify-between hidden">
-          {filterTags.map((filter) => (
-            <Tooltip label={`${filter} Manga`} key={filter}>
-              <div
-                className="font-libreFranklin text-base hover:cursor-pointer"
-                onClick={() => setHighlightFilter(filter)}
-                style={{
-                  color: highlightFilter == filter ? "#D21416" : "#787878",
-                }}
-              >
-                {filter}
-              </div>
-            </Tooltip>
-          ))}
-        </div>
-
-        <div className="flex flex-row justify-between md:hidden">
-          {filterTags.slice(0, 3).map((filter) => (
-            <Tooltip label={`${filter} Manga`} key={filter}>
-              <div
-                className="font-libreFranklin text-base hover:cursor-pointer"
-                onClick={() => setHighlightFilter(filter)}
-                style={{
-                  color: highlightFilter == filter ? "#D21416" : "#787878",
-                }}
-              >
-                {filter}
-              </div>
-            </Tooltip>
-          ))}
-        </div>
-
-        {/** Title */}
-        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
-          {titles[filterTags.indexOf(highlightFilter)]}
-        </div>
-
-        {/** List of Manga */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
-          {/** Manga Item */}
-          {mangas
-            .filter((manga) => manga.attributes?.in_print == true)
-            .filter((manga) => {
-              if (highlightFilter == "New") {
-                return manga.attributes?.release_date.includes("2023");
-              } else {
-                return manga.attributes?.genres.includes(highlightFilter);
-              }
-            })
-            .map((manga) => (
-              <div key={manga.id}>
-                <MangaItem manga={manga} />
-              </div>
+        {/** Display Mangas Section */}
+        <section className="flex flex-col">
+          {/** Filter Tags */}
+          <div className="md:flex md:flex-row md:justify-between hidden">
+            {filterTags.map((filter) => (
+              <Tooltip label={`${filter} Manga`} key={filter}>
+                <div
+                  className="font-libreFranklin text-base hover:cursor-pointer"
+                  onClick={() => setHighlightFilter(filter)}
+                  style={{
+                    color: highlightFilter == filter ? "#D21416" : "black",
+                  }}
+                >
+                  {filter}
+                </div>
+              </Tooltip>
             ))}
-        </div>
-      </section>
-    </div>
+          </div>
+
+          <div className="flex flex-row justify-between md:hidden">
+            {filterTags.slice(0, 3).map((filter) => (
+              <Tooltip label={`${filter} Manga`} key={filter}>
+                <div
+                  className="font-libreFranklin text-base hover:cursor-pointer"
+                  onClick={() => setHighlightFilter(filter)}
+                  style={{
+                    color: highlightFilter == filter ? "#D21416" : "black",
+                  }}
+                >
+                  {filter}
+                </div>
+              </Tooltip>
+            ))}
+          </div>
+
+          {/** Title */}
+          <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
+            {titles[filterTags.indexOf(highlightFilter)]}
+          </div>
+
+          {/** List of Manga */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
+            {/** Manga Item */}
+            {mangas
+              .filter((manga) => manga.attributes?.in_print == true)
+              .filter((manga) => {
+                if (highlightFilter == "New") {
+                  return manga.attributes?.release_date.includes("2023");
+                } else {
+                  return manga.attributes?.genres.includes(highlightFilter);
+                }
+              })
+              .map((manga) => (
+                <div key={manga.id}>
+                  <MangaItem manga={manga} />
+                </div>
+              ))}
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

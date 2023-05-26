@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import MangaGrid from "@/components/MangaGrid";
 import { getMangas, getRecommended } from "@/lib/custom-functions";
 import Link from "next/link";
+import HeadComponent from "@/components/HeadComponent";
 
 /**
  * This page displays all the items in a users cart
@@ -80,89 +81,92 @@ export default function CartPage() {
   if (isLoading) return <div>Loading</div>;
 
   return (
-    <div className="flex flex-col mt-5">
-      {/** Cart Section */}
-      <section className="flex flex-col">
-        {/** Page title */}
-        <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
-          Cart
-        </div>
+    <>
+      <HeadComponent title="Cart | Mangaka Bonanza" description="View the items in your cart on the Mangaka Bonanza website" />
+      <div className="flex flex-col mt-5">
+        {/** Cart Section */}
+        <section className="flex flex-col">
+          {/** Page title */}
+          <div className="flex flex-row place-content-center text-2xl md:text-4xl text-siteRed py-11">
+            Cart
+          </div>
 
-        {/** Cart Items */}
-        {cart.length > 0 ? (
-          <div className="flex flex-col gap-y-10">
-            <div className="flex flex-col">
-              {mangas.map((manga) => (
-                <div key={manga.id}>
-                  <CartItem
-                    manga={manga}
-                    quantity={cart.filter((id) => id == manga.id).length}
-                    removeFromCart={() => removeFromCart(manga.id)}
-                  />
-                  <div className="h-3 w-full"></div>
-                </div>
-              ))}
-            </div>
+          {/** Cart Items */}
+          {cart.length > 0 ? (
+            <div className="flex flex-col gap-y-10">
+              <div className="flex flex-col">
+                {mangas.map((manga) => (
+                  <div key={manga.id}>
+                    <CartItem
+                      manga={manga}
+                      quantity={cart.filter((id) => id == manga.id).length}
+                      removeFromCart={() => removeFromCart(manga.id)}
+                    />
+                    <div className="h-3 w-full"></div>
+                  </div>
+                ))}
+              </div>
 
-            {/** Total */}
-            <div className="flex flex-row place-content-center md:place-content-end text-xl font-libreFranklin">
-              {`Total: $${total}`}
-            </div>
+              {/** Total */}
+              <div className="flex flex-row place-content-center md:place-content-end text-xl font-libreFranklin">
+                {`Total: $${total}`}
+              </div>
 
-            {/** Checkout button */}
-            <div className="flex flex-row place-content-center md:place-content-end">
-              <Link href="/checkout">
-                <motion.button
-                  className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
-                  whileHover={{
-                    scale: 0.9,
-                  }}
-                  whileTap={{
-                    scale: 0.7,
-                  }}
-                >
-                  Checkout
-                </motion.button>
-              </Link>
+              {/** Checkout button */}
+              <div className="flex flex-row place-content-center md:place-content-end">
+                <Link href="/checkout">
+                  <motion.button
+                    className="w-48 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+                    whileHover={{
+                      scale: 0.9,
+                    }}
+                    whileTap={{
+                      scale: 0.7,
+                    }}
+                  >
+                    Checkout
+                  </motion.button>
+                </Link>
+              </div>
             </div>
+          ) : (
+            <div className="flex flex-col gap-y-11 place-items-center">
+              <div className="flex flex-row font-libreFranklin text-xl">
+                No Items in Cart
+              </div>
+              <div className="flex flex-row gap-x-4">
+                <Link href="/">
+                  <motion.button
+                    className="w-56 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
+                    whileHover={{
+                      scale: 0.9,
+                    }}
+                    whileTap={{
+                      scale: 0.7,
+                    }}
+                  >
+                    Check out some manga
+                  </motion.button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/** Recommended */}
+        {recommended.length > 0 ? (
+          <div>
+            <SectionDivider />
+            <MangaGrid
+              mangas={recommended}
+              gridTitle={"Recommendations"}
+              titleColor={"text-siteGray"}
+            />
           </div>
         ) : (
-          <div className="flex flex-col gap-y-11 place-items-center">
-            <div className="flex flex-row font-libreFranklin text-xl">
-              No Items in Cart
-            </div>
-            <div className="flex flex-row gap-x-4">
-              <Link href="/">
-                <motion.button
-                  className="w-56 h-12 md:h-14 bg-siteRed font-libreFranklin text-white font-semibold"
-                  whileHover={{
-                    scale: 0.9,
-                  }}
-                  whileTap={{
-                    scale: 0.7,
-                  }}
-                >
-                  Check out some manga
-                </motion.button>
-              </Link>
-            </div>
-          </div>
+          <></>
         )}
-      </section>
-
-      {/** Recommended */}
-      {recommended.length > 0 ? (
-        <div>
-          <SectionDivider />
-          <MangaGrid
-            mangas={recommended}
-            gridTitle={"Recommendations"}
-            titleColor={"text-siteGray"}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
