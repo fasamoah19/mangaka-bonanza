@@ -8,7 +8,7 @@ export const strapiFetch = async (path: string, query: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_KEY!}`,
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_PROD_KEY!}`,
       },
     }
   );

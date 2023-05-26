@@ -16,7 +16,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     {
       filters: {
         genres: {
-          $contains: genre,
+          $containsi: genre,
         },
       },
       sort: ["name"],
