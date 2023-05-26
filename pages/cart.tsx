@@ -150,14 +150,19 @@ export default function CartPage() {
         )}
       </section>
 
-      <SectionDivider />
-
       {/** Recommended */}
-      <MangaGrid
-        mangas={recommended}
-        gridTitle={"Recommendations"}
-        titleColor={"text-siteGray"}
-      />
+      {recommended.length > 0 ? (
+        <div>
+          <SectionDivider />
+          <MangaGrid
+            mangas={recommended}
+            gridTitle={"Recommendations"}
+            titleColor={"text-siteGray"}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
