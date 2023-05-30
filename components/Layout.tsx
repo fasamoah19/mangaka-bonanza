@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -29,7 +30,7 @@ const Banner = () => {
   return (
     <div className="hidden md:flex py-3">
       {/** Banner */}
-      <img
+      <Image
         src={"/banner.jpg"}
         className="object-cover w-full h-32 object-center-40-per"
         alt="Banner image"
