@@ -32,6 +32,7 @@ const Banner = () => {
       <img
         src={"/banner.jpg"}
         className="object-cover w-full h-32 object-center-40-per"
+        alt="Banner image"
       />
     </div>
   );
