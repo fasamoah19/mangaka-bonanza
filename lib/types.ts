@@ -12,6 +12,7 @@ export type Manga = {
     updatedAt: string;
     genres: string[];
     series_name: string;
+    cloudinary_url: string;
     image: {
       data: Image
     };
@@ -45,6 +46,7 @@ export type Mangaka = {
     mostRecentMangaTitle: string;
     createdAt: string;
     updatedAt: string;
+    cloudinary_url: string;
     publishedAt: string;
     slug: string;
     image: {
@@ -79,6 +81,7 @@ export type MangaSeries = {
       data: Manga[]
     },
     slug: string,
+    cloudinary_url: string;
   }
 }
 

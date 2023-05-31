@@ -5,7 +5,7 @@ import MangaGrid from "@/components/MangaGrid";
 import ReviewItem from "@/components/ReviewItem";
 import Tooltip from "@/components/Tooltip";
 import StarIcon from "@/components/icons/StarIcon";
-import { strapiFetch } from "@/lib/custom-functions";
+import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
 import { Manga } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -125,15 +125,11 @@ export default function SelectedMangaPage({
           {/** Mobile Design */}
           <div className="flex flex-col md:hidden gap-y-5 place-items-center">
             <Image
-              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                manga.attributes?.image.data.attributes?.url
-              }`}
+              src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 360, 536)}
               className="object-cover"
               height={536}
               width={360}
-              alt={
-                manga.attributes?.image.data.attributes?.alternativeText ?? ""
-              }
+              alt={`${manga.attributes?.name} Manga Cover`}
             />
 
             {/** Title */}
@@ -281,15 +277,11 @@ export default function SelectedMangaPage({
             {/** Image and buttons */}
             <div className="hidden md:flex md:flex-col gap-y-5">
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                  manga.attributes?.image.data.attributes?.url
-                }`}
+                src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 360, 536)}
                 className="object-cover"
                 height={536}
                 width={360}
-                alt={
-                  manga.attributes?.image.data.attributes?.alternativeText ?? ""
-                }
+                alt={`${manga.attributes?.name} Manga Cover`}
               />
               <motion.button
                 className="h-14 bg-siteRed text-white font-libreFranklin font-semibold"

@@ -2,7 +2,7 @@ import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import HeadComponent from "@/components/HeadComponent";
 import SeriesGrid from "@/components/SeriesGrid";
-import { strapiFetch } from "@/lib/custom-functions";
+import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
 import { MangaSeries, Mangaka } from "@/lib/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
@@ -77,9 +77,7 @@ export default function MangakaPage({
           {/** Desktop Design */}
           <div className="flex flex-col md:flex-row md:gap-12">
             <Image
-              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                mangaka.attributes?.image.data.attributes?.url
-              }`}
+              src={transformImageLink(mangaka.attributes?.cloudinary_url ?? "", 536, 360)}
               alt={
                 mangaka.attributes?.image.data.attributes?.alternativeText ?? ""
               }

@@ -1,3 +1,4 @@
+import { transformImageLink } from "@/lib/custom-functions";
 import { Manga } from "@/lib/types";
 import Image from "next/image";
 
@@ -24,9 +25,7 @@ export default function CartItem({
       <div className="flex flex-row space-x-5 md:space-x-10 place-items-center">
         {/** Manga Cover */}
         <Image
-          src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-            manga.attributes?.image.data.attributes?.url
-          }`}
+          src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 80, 128)}
           className="ml-3 md:ml-5 h-32 w-20"
           alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
           height={128}

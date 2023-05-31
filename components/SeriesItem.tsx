@@ -2,6 +2,7 @@ import { MangaSeries } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import Tooltip from "./Tooltip";
+import { transformImageLink } from "@/lib/custom-functions";
 
 /** Props necessary for the component */
 type SeriesItemProps = {
@@ -23,15 +24,10 @@ export default function SeriesItem({ singleSeries }: SeriesItemProps) {
       <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
         <div>
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-              singleSeries.attributes?.firstCover?.data.attributes?.url
-            }`}
+            src={transformImageLink(singleSeries.attributes?.cloudinary_url ?? "", 208, 288)}
             width={208}
             height={288}
-            alt={
-              singleSeries.attributes?.firstCover?.data.attributes
-                ?.alternativeText ?? ""
-            }
+            alt={`${singleSeries.attributes?.name} First Manga Cover`}
           />
           <div className="flex flex-col py-5 text-sm px-2 space-y-2">
             <Tooltip label="View series" decreaseY>

@@ -10,6 +10,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'mangaka-bonanza.herokuapp.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
       }
     ],
   }
