@@ -1,5 +1,5 @@
 import qs from "qs";
-import { Manga } from "./types";
+import { Manga, MangaSeries, Mangaka } from "./types";
 
 export const strapiFetch = async (path: string, query: string) => {
   return await fetch(
@@ -93,4 +93,14 @@ export async function getRecommended(mangas: Manga[]) {
   }).splice(0, 4)
 
   return filteredMangas;
+}
+
+export function transformImageLink(link: string, width: number, height: number) {
+  const separated = link.split("upload/")
+  const newLink = separated[0] + "upload/" + `c_scale,w_${width},h_${height}/` + separated[1]
+
+  return newLink;
+}
+
+export function getImageAlt(item: Manga | MangaSeries | Mangaka) {
 }

@@ -11,6 +11,7 @@ import {
   useSetCartContext,
 } from "@/context/CartContextProvider";
 import Tooltip from "./Tooltip";
+import { transformImageLink } from "@/lib/custom-functions";
 
 /** Props necessary for the component */
 type MangaItemProps = {
@@ -35,13 +36,11 @@ export default function MangaItem({ manga }: MangaItemProps) {
       <Link href={`/mangas/${manga.attributes?.slug}`}>
         {/* TODO: Navigate to selected manga page */}
         <motion.img
-          src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-            manga.attributes?.image.data.attributes?.url
-          }`}
+          src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 208, 288)}
           className="w-52 h-72"
           height={'288px'}
           width={'208px'}
-          alt={`${manga.attributes?.image.data.attributes?.alternativeText}`}
+          alt={`${manga.attributes?.name} Manga Cover`}
         />
       </Link>
 

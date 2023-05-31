@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartContext, useSetCartContext } from "@/context/CartContextProvider";
+import { transformImageLink } from "@/lib/custom-functions";
 
 /** Necessary props for this component */
 type SpotlightOfTheWeekHeroProps = {
@@ -30,13 +31,11 @@ export default function SpotlightOfTheWeekHero({
       <motion.div layout className="flex gap-12 md:flex-row flex-col place-items-center">
         <Link href={`/mangas/${manga.attributes?.slug}`}>
           <Image
-            src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-              manga.attributes?.image.data.attributes?.url
-            }`}
+            src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 280, 420)}
             className="shadow-md"
             height={420}
             width={280}
-            alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
+            alt={`${manga.attributes?.name} Manga Cover`}
           />
         </Link>
 

@@ -3,7 +3,7 @@ import GenreTag from "@/components/GenreTag";
 import HeadComponent from "@/components/HeadComponent";
 import MangaGrid from "@/components/MangaGrid";
 import Tooltip from "@/components/Tooltip";
-import { strapiFetch } from "@/lib/custom-functions";
+import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
 import { Manga, MangaSeries } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -119,13 +119,8 @@ export default function MangaSeriesPage({
         <section className="flex mt-16 md:mx-auto flex-col place-items-center">
           <div className="hidden md:flex md:gap-12">
             <Image
-              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                mangaSeries.attributes?.firstCover.data.attributes?.url
-              }`}
-              alt={
-                mangaSeries.attributes?.firstCover.data.attributes
-                  ?.alternativeText ?? ""
-              }
+              src={transformImageLink(mangaSeries.attributes?.cloudinary_url ?? "", 280, 420)}
+              alt={`${mangaSeries.attributes?.name} First Cover`}
               height={420}
               width={280}
             />
@@ -195,13 +190,8 @@ export default function MangaSeriesPage({
           {/** Mobile design */}
           <div className="flex flex-col gap-y-5 place-items-center md:hidden">
             <Image
-              src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${
-                mangaSeries.attributes?.firstCover.data.attributes?.url
-              }`}
-              alt={
-                mangaSeries.attributes?.firstCover.data.attributes
-                  ?.alternativeText ?? ""
-              }
+              alt={`${mangaSeries.attributes?.name} First Cover`}
+              src={transformImageLink(mangaSeries.attributes?.cloudinary_url ?? "", 280, 420)}
               height={420}
               width={280}
             />

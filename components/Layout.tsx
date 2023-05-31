@@ -30,12 +30,14 @@ const Banner = () => {
   return (
     <div className="hidden md:flex py-3">
       {/** Banner */}
-      <img
-        src={"/banner.jpg"}
-        className="object-cover w-full h-32 object-center-40-per"
-        alt="Banner image"
-        height={'128px'}
-      />
+      <div className="w-full h-32 relative">
+        <Image
+          src={"/banner.jpg"}
+          className="object-cover object-center-40-per"
+          alt="Banner image"
+          fill
+        />
+      </div>
     </div>
   );
 };
