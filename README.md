@@ -1,15 +1,15 @@
 # Mangaka Bonanza Website
 Mangaka Bonanza is a sample website allowing its users to purchase different manga and view information on their favorite mangakas.
 
-NOTE: This website is a demonstration of capability and NOT an actual site to order manga. 😄
+NOTE: This website is a demonstration of capability and NOT an actual site to order manga. A real version of this website would include a Shopify instance. 😄
 
 ## Resources
-- NextJS (front-end development)
-- Strapi (CMS)
-- Heroku (Hosting the CMS)
-- Vercel (Hosting the website)
-- Cloudinary (CDN)
-- Tailwind CSS (Styling)
+- [NextJS](https://vercel.com) (front-end development)
+- [Strapi](https://strapi.io) (CMS)
+- [Heroku](https://www.heroku.com/home) (Hosting the CMS)
+- [Vercel](https://vercel.com) (Hosting the website)
+- [Cloudinary](https://cloudinary.com) (CDN)
+- [Tailwind CSS](https://tailwindcss.com) (Styling)
 
 
 ## Screenshots
