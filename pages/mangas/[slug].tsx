@@ -29,6 +29,9 @@ async function getSelectedManga(slug: string) {
     mangaka (
       name,
       slug
+    ),
+    manga_series (
+      name
     )
     `
     )
