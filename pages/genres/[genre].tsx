@@ -1,9 +1,8 @@
 import HeadComponent from "@/components/HeadComponent";
 import SeriesGrid from "@/components/SeriesGrid";
-import { strapiFetch } from "@/lib/custom-functions";
+import { supabase } from "@/lib/api";
 import { MangaSeries } from "@/lib/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import qs from "qs";
 
 /**
  * Retrieves all the manga by a selected genre
@@ -13,34 +12,29 @@ import qs from "qs";
  */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const genre = context.params?.genre;
-  const query = qs.stringify(
-    {
-      filters: {
-        genres: {
-          $containsi: genre,
-        },
-      },
-      sort: ["name"],
-      populate: {
-        firstCover: true,
-        mangaka: true,
-      },
-    },
-    { encodeValuesOnly: true }
-  );
 
-  const response = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGA_SERIES_PATH!,
-    query
-  );
+  const { data: seriesList, error } = await supabase.from('MangaSeries')
+    .select(`
+    *,
+    mangaka (
+      name,
+      slug
+    )
+    `)
+    .contains('genres', [genre])
 
-  const mangaObjects = await response.json();
-  const data = mangaObjects.data as MangaSeries[];
+  if (error) {
+    return {
+      redirect: {
+        destination: '/500'
+      }
+    }
+  }
 
   return {
     props: {
       genre: genre,
-      seriesList: data,
+      seriesList: seriesList as MangaSeries[],
     },
   };
 }

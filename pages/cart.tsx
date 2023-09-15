@@ -22,7 +22,7 @@ export default function CartPage() {
   const setCart = useSetCartContext();
 
   const [mangas, setMangas] = useState<Manga[]>([]);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [total, setTotal] = useState<number>(0);
   const [recommended, setRecommended] = useState<Manga[]>([]);
 
@@ -37,7 +37,7 @@ export default function CartPage() {
   const updateTotal = () => {
     let sum = 0;
     mangas.map((manga) => {
-      sum = sum + (manga.attributes?.price ?? 0);
+      sum = sum + (manga?.price ?? 0);
     });
     setTotal(sum);
   };
@@ -63,19 +63,19 @@ export default function CartPage() {
     /** Function that retrives the manga for the recommended section */
     const getRecommendedData = async () => {
       const recommendedData = await getRecommended(mangas);
-      setRecommended(recommendedData);
+      setRecommended(recommendedData ?? []);
     };
 
     if (mangas.length == 0 && cart.length > 0) {
       getData();
     } else {
-      if (recommended.length == 0) {
-        console.log("Running");
+      if (recommended?.length == 0) {
         getRecommendedData();
       }
       setLoading(false);
       updateTotal();
     }
+
   }, [mangas]);
 
   if (isLoading) return <div>Loading</div>;
@@ -154,7 +154,7 @@ export default function CartPage() {
         </section>
 
         {/** Recommended */}
-        {recommended.length > 0 ? (
+        {recommended?.length > 0 ? (
           <div>
             <SectionDivider />
             <MangaGrid

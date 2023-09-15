@@ -2,11 +2,11 @@ import SectionDivider from "@/components/Divider";
 import GenreTag from "@/components/GenreTag";
 import HeadComponent from "@/components/HeadComponent";
 import SeriesGrid from "@/components/SeriesGrid";
-import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
+import { supabase } from "@/lib/api";
+import { transformImageLink } from "@/lib/custom-functions";
 import { MangaSeries, Mangaka } from "@/lib/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
-import qs from "qs";
 
 /**
  * Retrieves the selected mangaka
@@ -16,41 +16,46 @@ import qs from "qs";
  */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const slug = context.params?.slug;
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      populate: {
-        manga: {
-          populate: ["image", "mangaka"],
-        },
-        image: true,
-        manga_series: {
-          populate: ["firstCover", "mangaka"],
-        },
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    }
-  );
 
-  const response = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGAKAS_PATH!,
-    query
-  );
+  const { data, error: mangakaError } = await supabase
+    .from("Mangaka")
+    .select("*")
+    .eq("slug", slug!)
+    .single();
 
-  const mangakaObject = await response.json();
-  const mangaka = mangakaObject.data[0] as Mangaka;
-  const seriesList = mangaka.attributes?.manga_series.data as MangaSeries[];
+  if (mangakaError) {
+    return {
+      redirect: {
+        destination: "/500",
+      },
+    };
+  }
+
+  const mangaka = data as Mangaka;
+
+  const { data: seriesList, error: seriesError } = await supabase
+    .from("MangaSeries")
+    .select(`
+    *,
+    mangaka (
+      name,
+      slug
+    )
+    `)
+    .eq("mangaka", mangaka.id);
+
+  if (seriesError) {
+    return {
+      redirect: {
+        destination: "/500",
+      },
+    };
+  }
 
   return {
     props: {
       mangaka: mangaka,
-      seriesList: seriesList,
+      seriesList: seriesList as MangaSeries[],
     },
   };
 }
@@ -68,8 +73,8 @@ export default function MangakaPage({
   return (
     <>
       <HeadComponent
-        title={`${mangaka.attributes?.name} | Mangaka Bonanza`}
-        description={`${mangaka.attributes?.bio.substring(0, 140)}...`}
+        title={`${mangaka?.name} | Mangaka Bonanza`}
+        description={`${mangaka?.bio?.substring(0, 140)}...`}
       />
       <div className="flex flex-col pb-8">
         {/** Selected Mangaka Page Section */}
@@ -77,9 +82,13 @@ export default function MangakaPage({
           {/** Desktop Design */}
           <div className="flex flex-col md:flex-row md:gap-12">
             <Image
-              src={transformImageLink(mangaka.attributes?.cloudinary_url ?? "", 536, 360)}
+              src={transformImageLink(
+                mangaka?.image_url ?? "",
+                536,
+                360
+              )}
               alt={
-                mangaka.attributes?.image.data.attributes?.alternativeText ?? ""
+                mangaka.name ?? ""
               }
               height={536}
               width={536}
@@ -88,33 +97,33 @@ export default function MangakaPage({
             <div className="flex flex-col place-items-center gap-y-5 pt-5 md:pt-0 md:place-items-start md:space-y-4 md:place-content-start">
               {/** Mangaka Name */}
               <div className="font-libreFranklin text-3xl leading-none">
-                {mangaka.attributes?.name}
+                {mangaka?.name}
               </div>
 
               {/** Date of Birth */}
               <div className="text-base md:text-xl">
-                <b>Date of Birth:</b> {` ${mangaka.attributes?.date_of_birth}`}
+                <b>Date of Birth:</b> {` ${mangaka?.dob}`}
               </div>
 
               {/** Birth Place */}
               <div className="text-base md:text-xl">
-                <b>Birth Place:</b> {` ${mangaka.attributes?.birth_place}`}
+                <b>Birth Place:</b> {` ${mangaka?.birth_place}`}
               </div>
 
               {/** First Manga */}
               <div className="text-base md:text-xl">
-                <b>First Manga:</b> {` ${mangaka.attributes?.firstMangaTitle}`}
+                <b>First Manga:</b> {` ${mangaka?.first_manga_title}`}
               </div>
 
               {/** Most Recent Manga */}
               <div className="text-base md:text-xl">
                 <b>Most Recent Manga:</b>{" "}
-                {` ${mangaka.attributes?.mostRecentMangaTitle}`}
+                {` ${mangaka?.most_recent_manga}`}
               </div>
 
               {/** Tags */}
               <div className="flex flex-row gap-4">
-                {mangaka.attributes?.manga.data[0].attributes?.genres.map(
+                {seriesList[0]?.genres?.map(
                   (genre) => (
                     <div key={genre}>
                       <GenreTag genre={genre} />
@@ -125,7 +134,7 @@ export default function MangakaPage({
 
               {/** Mangaka Bio */}
               <div className="text-base max-w-lg md:max-w-md md:min-h-[120px]">
-                {mangaka.attributes?.bio}
+                {mangaka?.bio}
               </div>
             </div>
           </div>
@@ -137,7 +146,7 @@ export default function MangakaPage({
 
         <SeriesGrid
           seriesList={seriesList}
-          gridTitle={`${mangaka.attributes?.name}'s Work`}
+          gridTitle={`${mangaka?.name}'s Work`}
         />
       </div>
     </>

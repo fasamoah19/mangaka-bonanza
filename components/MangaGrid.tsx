@@ -23,7 +23,7 @@ export default function MangaGrid({ mangas, gridTitle, titleColor }: MangaGridPr
       {/** Desktop Grid */}
       <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 md:place-items-center md:gap-y-16 md:gap-x-8 lg:gap-x-14">
         {mangas.map((manga) => (
-          <div key={manga.attributes?.name}>
+          <div key={manga?.name}>
             <MangaItem manga={manga} />
           </div>
         ))}
@@ -31,7 +31,7 @@ export default function MangaGrid({ mangas, gridTitle, titleColor }: MangaGridPr
       {/** Mobile Grid */}
       <div className="grid grid-cols-1 place-items-center gap-y-16 md:hidden">
         {mangas.slice(0, 4).map((manga) => (
-          <div key={manga.attributes?.name}>
+          <div key={manga?.name}>
             <MangaItem manga={manga} />
           </div>
         ))}

@@ -14,7 +14,6 @@ import {
   checkoutReducer,
 } from "@/reducers/checkout_reducer";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useEffect, useReducer, useState } from "react";
 
 type PaymentType = "apple-pay" | "google-pay" | "cc" | "pay-pal";
@@ -39,7 +38,7 @@ export default function CheckoutPage() {
     let sum = 0;
     let shipping = 5.0;
     mangas.map((manga) => {
-      sum = sum + (manga.attributes?.price ?? 0);
+      sum = sum + (manga?.price ?? 0);
     });
     let floatTax = parseFloat((sum * 0.06).toFixed(2));
     let finalTax = floatTax.toString();
@@ -81,19 +80,19 @@ export default function CheckoutPage() {
     /** Function that retrives the manga for the recommended section */
     const getRecommendedData = async () => {
       const recommendedData = await getRecommended(mangas);
-      setRecommended(recommendedData);
+      setRecommended(recommendedData ?? []);
     };
 
     if (mangas.length == 0 && cart.length > 0) {
       getData();
     } else {
-      if (recommended.length == 0) {
-        console.log("Running");
+      if (recommended?.length == 0) {
         getRecommendedData();
       }
       setLoading(false);
       updateTotal();
     }
+
   }, [mangas]);
 
   if (isLoading) return <div>Loading</div>;

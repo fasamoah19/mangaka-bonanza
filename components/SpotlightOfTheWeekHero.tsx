@@ -1,4 +1,4 @@
-import { Manga } from "@/lib/types";
+import { Manga, Mangaka } from "@/lib/types";
 import GenreTag from "./GenreTag";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -29,37 +29,37 @@ export default function SpotlightOfTheWeekHero({
         Spotlight of the Week
       </div>
       <motion.div layout className="flex gap-12 md:flex-row flex-col place-items-center">
-        <Link href={`/mangas/${manga.attributes?.slug}`}>
+        <Link href={`/mangas/${manga?.slug}`}>
           <Image
-            src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 280, 420)}
+            src={transformImageLink(manga?.image_url ?? "", 280, 420)}
             className="shadow-md"
             height={420}
             width={280}
-            alt={`${manga.attributes?.name} Manga Cover`}
+            alt={`${manga?.name} Manga Cover`}
           />
         </Link>
 
         <div className="md:align-top space-y-4 md:space-y-6 place-items-center">
           {/** Manga Name */}
           <div className="font-libreFranklin text-3xl leading-none flex flex-row place-content-center md:place-content-start">
-            {manga?.attributes?.name}
+            {manga?.name}
           </div>
 
           {/** Author Name */}
           <div className="text-base md:text-xl place-content-center flex flex-row gap-2 md:place-content-start">
             <b>Author:</b>
-            {`${manga.attributes?.mangaka.data.attributes?.name}`}
+            {`${(manga?.mangaka as unknown as Mangaka).name}`}
           </div>
 
           {/** Release Date */}
           <div className="text-base md:text-xl flex flex-row gap-2 place-content-center md:place-content-start">
             <b>Release Date:</b>
-            {`${manga.attributes?.release_date}`}
+            {`${manga?.release_date}`}
           </div>
 
           {/** Tags */}
           <div className="flex flex-row gap-4 place-content-center md:place-content-start">
-            {manga.attributes?.genres.map((genre) => (
+            {manga?.genres?.map((genre) => (
               <div key={genre}>
                 <GenreTag genre={genre} />
               </div>
@@ -68,7 +68,7 @@ export default function SpotlightOfTheWeekHero({
 
           {/** Summary */}
           <div className="text-sm md:max-w-xl flex flex-row place-content-center md:place-content-start">
-            {`${manga.attributes?.summary}`}
+            {`${manga?.summary}`}
           </div>
 
           {/** Buttons */}
@@ -83,7 +83,7 @@ export default function SpotlightOfTheWeekHero({
               Buy
             </motion.button>
 
-            <Link href={`/mangas/${manga.attributes?.slug}`}>
+            <Link href={`/mangas/${manga?.slug}`}>
               <motion.button
                 className="w-52 md:w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                 whileHover={{

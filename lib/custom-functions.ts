@@ -1,19 +1,5 @@
-import qs from "qs";
 import { Manga, MangaSeries, Mangaka } from "./types";
-
-export const strapiFetch = async (path: string, query: string) => {
-  return await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL!}${path}?${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_PROD_KEY!}`,
-      },
-    }
-  );
-
-}
+import { supabase } from "./api";
 
 /**
  * Helper function that retrieves the mangas within the cart
@@ -23,28 +9,20 @@ export const strapiFetch = async (path: string, query: string) => {
  * @returns list of mangas
  */
 export async function getMangas(cart: number[]) {
-  const query = qs.stringify(
-    {
-      filters: {
-        id: {
-          $eq: cart,
-        },
-      },
-      populate: {
-        image: true,
-        mangaka: {
-          populate: ["name"],
-        },
-      },
-    },
-    { encodeValuesOnly: true }
-  );
 
-  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!, query)
-  const mangaObjects = await response.json();
-  const data = mangaObjects.data as Manga[];
+  const { data, error } = await supabase
+    .from('Manga')
+    .select(`
+      *,
+      mangaka (
+        name,
+        slug
+      )
+    `)
+    .in('id', cart)
 
-  return data;
+  if (!error && data) return data as Manga[]
+  else return []
 }
 
 /**
@@ -55,39 +33,30 @@ export async function getMangas(cart: number[]) {
  * @returns list of Manga objects
  */
 export async function getRecommended(mangas: Manga[]) {
-  const genres = new Set(mangas.map((manga) => manga.attributes?.genres).flat())
-  const query = qs.stringify({
-    pagination: {
-      page: 1,
-      pageSize: 12
-    },
-    filters: {
-      id: {
-        $ne: mangas.length > 0 ? mangas.map((manga) => manga.id) : [0]
-      },
-      genres: {
-        $in: mangas.length > 0 ? genres : "Comedy"
-      },
-      series_name: {
-        $notIn: mangas.map((manga) => manga.attributes?.series_name)
-      },
-      in_print: true
-    },
-    populate: {
-      image: true,
-      mangaka: true
-    }
-  }, { encodeValuesOnly: true })
+  const genres = new Set(mangas.map((manga) => manga?.genres).flat())
 
-  const response = await strapiFetch(process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!, query)
+  const { data, error } = await supabase
+    .from('Manga')
+    .select(`
+      *,
+      mangaka (
+        name,
+        slug
+      ),
+      manga_series (
+        name
+      )
+    `)
+    .eq('in_print', true)
+    .not('id', 'in', mangas.length > 0 ? `(${mangas.map((manga) => manga.id).toString()})` : '(0)')
+    .contains('genres', mangas.length > 0 ? Array.from(genres) : [])
+    .not('manga_series.name', 'in', mangas.length > 0 ? `(${mangas.map((manga) => (manga.manga_series as unknown as MangaSeries).name).toString()})` : '(0)')
 
-  const mangaObjects = await response.json();
-  const data = mangaObjects.data as Manga[]
   // Filters to show only one volume from a manga series
-  const filteredMangas = data.filter((manga, index, self) => {
+  const filteredMangas = data?.filter((manga, index, self) => {
     return (
       self.findIndex(
-        (v) => v.attributes?.series_name === manga.attributes?.series_name
+        (v) => (v?.manga_series as unknown as MangaSeries).name === (manga?.manga_series as unknown as MangaSeries).name
       ) === index
     );
   }).splice(0, 4)

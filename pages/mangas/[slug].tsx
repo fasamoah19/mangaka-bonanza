@@ -5,13 +5,13 @@ import MangaGrid from "@/components/MangaGrid";
 import ReviewItem from "@/components/ReviewItem";
 import Tooltip from "@/components/Tooltip";
 import StarIcon from "@/components/icons/StarIcon";
-import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
-import { Manga } from "@/lib/types";
+import { supabase } from "@/lib/api";
+import { transformImageLink } from "@/lib/custom-functions";
+import { Manga, MangaSeries, Mangaka } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import qs from "qs";
 
 /**
  * Helper function that retrieves the manga selected by the user
@@ -20,31 +20,22 @@ import qs from "qs";
  * @returns Manga object
  */
 async function getSelectedManga(slug: string) {
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      populate: {
-        image: true,
-        mangaka: true,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    }
-  );
 
-  const response = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
-    query
-  );
-  const selectedMangaObject = await response.json();
-  const selectedManga = selectedMangaObject.data[0] as Manga;
+  const { data: selectedManga, error } = await supabase
+    .from('Manga')
+    .select(
+      `
+    *,
+    mangaka (
+      name,
+      slug
+    )
+    `
+    )
+    .eq('slug', slug)
+    .single()
 
-  return selectedManga;
+  return selectedManga as Manga;
 }
 /**
  * Helper function that retrieves manga titles that are similar in genre
@@ -53,28 +44,26 @@ async function getSelectedManga(slug: string) {
  * @returns Array of manga objects that are similar in genre
  */
 async function getSimilarTitles(selectedManga: Manga) {
-  const query = qs.stringify(
-    {
-      populate: {
-        image: true,
-        mangaka: true,
-      },
-    },
-    { encodeValuesOnly: true }
-  );
 
-  const responseSimilarTitles = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
-    query
-  );
-  const mangas = await responseSimilarTitles.json();
+  const { data: mangas, error } = await supabase
+    .from('Manga')
+    .select(`
+    *,
+    mangaka (
+      name,
+      slug
+    ),
+    manga_series (
+      name
+    )
+    `)
 
-  const similarTitles = (mangas.data as Manga[])
+  const similarTitles = (mangas as Manga[])
     .filter(
       (manga) =>
-        manga.attributes?.genres.filter((genre) =>
-          selectedManga.attributes?.genres.includes(genre)
-        ).length && selectedManga.attributes?.name !== manga.attributes.name
+        manga?.genres?.filter((genre) =>
+          selectedManga?.genres?.includes(genre)
+        ).length && selectedManga?.name !== manga.name
     )
     .slice(0, 8)
     .reverse() as Manga[];
@@ -90,8 +79,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      manga: selectedManga,
-      similarTitles: similarTitles,
+      manga: selectedManga as Manga,
+      similarTitles: similarTitles as Manga[],
     },
   };
 }
@@ -116,8 +105,8 @@ export default function SelectedMangaPage({
   return (
     <>
       <HeadComponent
-        title={`${manga.attributes?.name} | Mangaka Bonanza`}
-        description={`${manga.attributes?.summary.substring(0, 140)}...`}
+        title={`${manga?.name} | Mangaka Bonanza`}
+        description={`${manga?.summary?.substring(0, 140)}...`}
       />
       <div className="flex flex-col">
         {/** Selected Manga Information Section */}
@@ -125,35 +114,35 @@ export default function SelectedMangaPage({
           {/** Mobile Design */}
           <div className="flex flex-col md:hidden gap-y-5 place-items-center">
             <Image
-              src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 360, 536)}
+              src={transformImageLink(manga?.image_url ?? "", 360, 536)}
               className="object-cover"
               height={536}
               width={360}
-              alt={`${manga.attributes?.name} Manga Cover`}
+              alt={`${manga?.name} Manga Cover`}
             />
 
             {/** Title */}
             <div className="text-4xl leading-none text-black">
-              {manga.attributes?.name}
+              {manga?.name}
             </div>
             {/** Author */}
             <Tooltip label="View mangaka">
               <Link
-                href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+                href={`/mangakas/${(manga?.mangaka as unknown as Mangaka)?.slug}`}
               >
                 <div className="text-base md:text-xl">
                   <b>Author:</b>
-                  {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+                  {` ${(manga?.mangaka as unknown as Mangaka)?.name}`}
                 </div>
               </Link>
             </Tooltip>
 
             {/** Series Name */}
             <Tooltip label="View manga series">
-              <Link href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}>
+              <Link href={`/series/${manga?.slug?.split("-vol")[0]}`}>
                 <div className="text-base md:text-xl">
                   <b>Series Name:</b>
-                  {` ${manga.attributes?.series_name}`}
+                  {` ${(manga?.manga_series as unknown as MangaSeries).name}`}
                 </div>
               </Link>
             </Tooltip>
@@ -161,7 +150,7 @@ export default function SelectedMangaPage({
             {/** Release Date */}
             <div className="text-base md:text-xl">
               <b>Release Date:</b>
-              {` ${manga.attributes?.release_date}`}
+              {` ${manga?.release_date}`}
             </div>
 
             {/** Rating */}
@@ -169,7 +158,7 @@ export default function SelectedMangaPage({
               <b>Rating: </b>
               <div className="flex flex-row gap-x-1">
                 {Array.from(Array(4).keys()).map((_, index) => (
-                  <div key={`${manga.attributes?.name}-${index}`}>
+                  <div key={`${manga?.name}-${index}`}>
                     <StarIcon />
                   </div>
                 ))}
@@ -179,7 +168,7 @@ export default function SelectedMangaPage({
 
             {/** Tags */}
             <div className="flex flex-row gap-4">
-              {manga.attributes?.genres.map((genre) => (
+              {manga?.genres?.map((genre) => (
                 <div key={genre}>
                   <GenreTag genre={genre} />
                 </div>
@@ -188,7 +177,7 @@ export default function SelectedMangaPage({
 
             {/** Summary */}
             <div className="text-base max-w-lg">
-              {`${manga.attributes?.summary}`}
+              {`${manga?.summary}`}
             </div>
 
             <motion.button
@@ -212,16 +201,16 @@ export default function SelectedMangaPage({
             <div className="hidden md:flex md:flex-col gap-y-7">
               {/** Title */}
               <div className="text-4xl leading-none text-black">
-                {manga.attributes?.name}
+                {manga?.name}
               </div>
               {/** Author */}
               <Tooltip label="View mangaka">
                 <Link
-                  href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+                  href={`/mangakas/${(manga?.mangaka as unknown as Mangaka)?.slug}`}
                 >
                   <div className="text-xl">
                     <b>Author:</b>
-                    {` ${manga.attributes?.mangaka.data.attributes?.name}`}
+                    {` ${(manga?.mangaka as unknown as Mangaka)?.name}`}
                   </div>
                 </Link>
               </Tooltip>
@@ -229,11 +218,11 @@ export default function SelectedMangaPage({
               {/** Series Name */}
               <Tooltip label="View manga series">
                 <Link
-                  href={`/series/${manga.attributes?.slug.split("-vol")[0]}`}
+                  href={`/series/${manga?.slug?.split("-vol")[0]}`}
                 >
                   <div className="text-xl">
                     <b>Series Name:</b>
-                    {` ${manga.attributes?.series_name}`}
+                    {` ${(manga?.manga_series as unknown as MangaSeries).name}`}
                   </div>
                 </Link>
               </Tooltip>
@@ -241,7 +230,7 @@ export default function SelectedMangaPage({
               {/** Release Date */}
               <div className="text-xl">
                 <b>Release Date:</b>
-                {` ${manga.attributes?.release_date}`}
+                {` ${manga?.release_date}`}
               </div>
 
               {/** Rating */}
@@ -249,7 +238,7 @@ export default function SelectedMangaPage({
                 <b>Rating: </b>
                 <div className="flex flex-row gap-x-1">
                   {Array.from(Array(4).keys()).map((_, index) => (
-                    <div key={`${manga.attributes?.name}-${index}`}>
+                    <div key={`${manga?.name}-${index}`}>
                       <StarIcon />
                     </div>
                   ))}
@@ -259,7 +248,7 @@ export default function SelectedMangaPage({
 
               {/** Tags */}
               <div className="flex flex-row gap-4">
-                {manga.attributes?.genres.map((genre) => (
+                {manga?.genres?.map((genre) => (
                   <div key={genre}>
                     <GenreTag genre={genre} />
                   </div>
@@ -268,7 +257,7 @@ export default function SelectedMangaPage({
 
               {/** Summary */}
               <div className="text-lg max-w-lg">
-                {`${manga.attributes?.summary}`}
+                {`${manga?.summary}`}
               </div>
             </div>
 
@@ -277,11 +266,11 @@ export default function SelectedMangaPage({
             {/** Image and buttons */}
             <div className="hidden md:flex md:flex-col gap-y-5">
               <Image
-                src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 360, 536)}
+                src={transformImageLink(manga?.image_url ?? "", 360, 536)}
                 className="object-cover"
                 height={536}
                 width={360}
-                alt={`${manga.attributes?.name} Manga Cover`}
+                alt={`${manga?.name} Manga Cover`}
               />
               <motion.button
                 className="h-14 bg-siteRed text-white font-libreFranklin font-semibold"

@@ -3,13 +3,13 @@ import GenreTag from "@/components/GenreTag";
 import HeadComponent from "@/components/HeadComponent";
 import MangaGrid from "@/components/MangaGrid";
 import Tooltip from "@/components/Tooltip";
-import { strapiFetch, transformImageLink } from "@/lib/custom-functions";
-import { Manga, MangaSeries } from "@/lib/types";
+import { supabase } from "@/lib/api";
+import { transformImageLink } from "@/lib/custom-functions";
+import { Manga, Mangaka } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import qs from "qs";
 
 /**
  * Helper function that retrieves manga titles that are similar in genre
@@ -18,28 +18,26 @@ import qs from "qs";
  * @returns Array of manga objects that are similar in genre
  */
 async function getSimilarTitles(selectedManga: Manga) {
-  const query = qs.stringify(
-    {
-      populate: {
-        image: true,
-        mangaka: true,
-      },
-    },
-    { encodeValuesOnly: true }
-  );
 
-  const responseSimilarTitles = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
-    query
-  );
-  const mangas = await responseSimilarTitles.json();
+  const { data: mangas, error } = await supabase
+    .from('Manga')
+    .select(`
+    *,
+    mangaka (
+      name,
+      slug
+    ),
+    manga_series (
+      name
+    )
+    `)
 
-  const similarTitles = (mangas.data as Manga[])
+  const similarTitles = (mangas as Manga[])
     .filter(
       (manga) =>
-        manga.attributes?.genres.filter((genre) =>
-          selectedManga.attributes?.genres.includes(genre)
-        ).length && selectedManga.attributes?.name !== manga.attributes.name
+        manga?.genres?.filter((genre) =>
+          selectedManga?.genres?.includes(genre)
+        ).length && selectedManga?.name !== manga?.name
     )
     .slice(0, 8)
     .reverse() as Manga[];
@@ -54,35 +52,46 @@ async function getSimilarTitles(selectedManga: Manga) {
  * @returns The Manga Series object and a list of Mangas within that series
  */
 async function getMangaSeries(slug: string) {
-  // Structuring the query to go in the link
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      populate: {
-        mangas: {
-          populate: ["image", "mangaka"],
-        },
-        mangaka: true,
-        firstCover: true,
-      },
-    },
-    {
-      encodeValuesOnly: true,
+  const { data: mangaSeries, error } = await supabase
+    .from('MangaSeries')
+    .select(`
+      *,
+      mangaka (
+        name,
+        slug
+      )
+    `)
+    .eq('slug', slug)
+    .single()
+
+  if (error) {
+    return {
+      redirect: {
+        destination: '/500'
+      }
     }
-  );
+  }
 
-  const response = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGA_SERIES_PATH!,
-    query
-  );
+  const { data, error: mangaError } = await supabase
+    .from('Manga')
+    .select(`
+      *,
+      mangaka (
+        name,
+        slug
+      )
+    `)
+    .eq('manga_series', mangaSeries.id)
 
-  const mangaSeriesObject = await response.json();
-  const mangaSeries = mangaSeriesObject.data[0] as MangaSeries;
-  const mangas = mangaSeries.attributes?.mangas.data as Manga[];
+  if (mangaError) {
+    return {
+      redirect: {
+        destination: '/500'
+      }
+    }
+  }
+
+  const mangas = data as Manga[]
 
   return { mangaSeries, mangas };
 }
@@ -90,6 +99,15 @@ async function getMangaSeries(slug: string) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const slug = context.params?.slug;
   const { mangaSeries, mangas } = await getMangaSeries(slug as string);
+
+  if (!mangas) {
+    return {
+      redirect: {
+        destination: '/500'
+      }
+    }
+  }
+
   const similarTitles = await getSimilarTitles(mangas[0]);
 
   return {
@@ -113,31 +131,31 @@ export default function MangaSeriesPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <HeadComponent title={`${mangaSeries.attributes?.name} | Mangaka Bonanza`} description={`${mangaSeries.attributes?.summary.substring(0, 140)}...`} />
+      <HeadComponent title={`${mangaSeries?.name} | Mangaka Bonanza`} description={`${mangaSeries?.summary?.substring(0, 140)}...`} />
       <div className="flex flex-col pb-8">
         {/** Manag Series Section */}
         <section className="flex mt-16 md:mx-auto flex-col place-items-center">
           <div className="hidden md:flex md:gap-12">
             <Image
-              src={transformImageLink(mangaSeries.attributes?.cloudinary_url ?? "", 280, 420)}
-              alt={`${mangaSeries.attributes?.name} First Cover`}
+              src={transformImageLink(mangaSeries?.first_cover_url ?? "", 280, 420)}
+              alt={`${mangaSeries?.name} First Cover`}
               height={420}
               width={280}
             />
             <div className="align-top space-y-4 md:space-y-6">
               {/** Manga Name */}
               <div className="font-libreFranklin text-3xl leading-none">
-                {mangaSeries.attributes?.name}
+                {mangaSeries?.name}
               </div>
 
               {/** Author Name */}
               <div className="text-xl">
                 <Tooltip label="Click to view mangaka">
                   <Link
-                    href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
+                    href={`/mangakas/${(mangaSeries?.mangaka as unknown as Mangaka)?.slug}`}
                   >
                     <b>Author:</b>{" "}
-                    {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+                    {` ${(mangaSeries?.mangaka as unknown as Mangaka)?.name}`}
                   </Link>
                 </Tooltip>
               </div>
@@ -145,12 +163,12 @@ export default function MangaSeriesPage({
               {/** Release Date */}
               <div className="text-xl">
                 <b>Release Date:</b>
-                {` ${mangas[0].attributes?.release_date}`}
+                {` ${mangas[0]?.release_date}`}
               </div>
 
               {/** Tags */}
               <div className="flex flex-row gap-4">
-                {mangaSeries.attributes?.genres.map((genre) => (
+                {mangaSeries?.genres?.map((genre) => (
                   <div key={genre}>
                     <GenreTag genre={genre} />
                   </div>
@@ -159,7 +177,7 @@ export default function MangaSeriesPage({
 
               {/** Summary */}
               <div className="text-sm max-w-lg min-h-[120px]">
-                {`${mangaSeries.attributes?.summary}`}
+                {`${mangaSeries?.summary}`}
               </div>
 
               {/** Buttons */}
@@ -173,7 +191,7 @@ export default function MangaSeriesPage({
                   Buy
                 </motion.button>
 
-                <Link href={`/mangas/${mangas[0].attributes?.slug}`}>
+                <Link href={`/mangas/${mangas[0]?.slug}`}>
                   <motion.button
                     className="w-48 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                     whileHover={{
@@ -190,35 +208,35 @@ export default function MangaSeriesPage({
           {/** Mobile design */}
           <div className="flex flex-col gap-y-5 place-items-center md:hidden">
             <Image
-              alt={`${mangaSeries.attributes?.name} First Cover`}
-              src={transformImageLink(mangaSeries.attributes?.cloudinary_url ?? "", 280, 420)}
+              alt={`${mangaSeries?.name} First Cover`}
+              src={transformImageLink(mangaSeries?.first_cover_url ?? "", 280, 420)}
               height={420}
               width={280}
             />
             {/** Manga Name */}
             <div className="font-libreFranklin text-3xl leading-none">
-              {mangaSeries.attributes?.name}
+              {mangaSeries?.name}
             </div>
 
             {/** Author Name */}
             <div className="text-base md:text-xl">
               <Link
-                href={`/mangakas/${mangaSeries.attributes?.mangaka.data.attributes?.slug}`}
+                href={`/mangakas/${(mangaSeries?.mangaka as unknown as Mangaka)?.slug}`}
               >
                 <b>Author:</b>{" "}
-                {` ${mangaSeries.attributes?.mangaka.data.attributes?.name}`}
+                {` ${(mangaSeries?.mangaka as unknown as Mangaka)?.name}`}
               </Link>
             </div>
 
             {/** Release Date */}
             <div className="text-base md:text-xl">
               <b>Release Date:</b>
-              {` ${mangas[0].attributes?.release_date}`}
+              {` ${mangas[0]?.release_date}`}
             </div>
 
             {/** Tags */}
             <div className="flex flex-row gap-4">
-              {mangaSeries.attributes?.genres.map((genre) => (
+              {mangaSeries?.genres?.map((genre) => (
                 <div key={genre}>
                   <GenreTag genre={genre} />
                 </div>
@@ -227,7 +245,7 @@ export default function MangaSeriesPage({
 
             {/** Summary */}
             <div className="text-base max-w-lg">
-              {`${mangaSeries.attributes?.summary}`}
+              {`${mangaSeries?.summary}`}
             </div>
 
             <motion.button
@@ -239,7 +257,7 @@ export default function MangaSeriesPage({
               Buy
             </motion.button>
 
-            <Link href={`/mangas/${mangas[0].attributes?.slug}`}>
+            <Link href={`/mangas/${mangas[0]?.slug}`}>
               <motion.button
                 className="w-52 h-12 md:h-14 bg-siteLightGray font-libreFranklin text-black font-semibold"
                 whileHover={{

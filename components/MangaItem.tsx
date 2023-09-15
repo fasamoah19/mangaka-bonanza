@@ -1,4 +1,4 @@
-import { Manga } from "@/lib/types";
+import { Manga, Mangaka } from "@/lib/types";
 import StarIcon from "./icons/StarIcon";
 import BookmarkIcon from "./icons/BookmarkIcon";
 import CartIcon from "./icons/CartIcon";
@@ -33,41 +33,41 @@ export default function MangaItem({ manga }: MangaItemProps) {
   return (
     <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
       {/** Manga Cover */}
-      <Link href={`/mangas/${manga.attributes?.slug}`}>
+      <Link href={`/mangas/${manga?.slug}`}>
         {/* TODO: Navigate to selected manga page */}
         <motion.img
-          src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 208, 288)}
+          src={transformImageLink(manga?.image_url ?? "", 208, 288)}
           className="w-52 h-72"
           height={'288px'}
           width={'208px'}
-          alt={`${manga.attributes?.name} Manga Cover`}
+          alt={`${manga?.name} Manga Cover`}
         />
       </Link>
 
       {/** Manga Information */}
       <div className="flex flex-col py-5 text-sm px-2 space-y-2">
         <Tooltip label="View manga details" decreaseY={true}>
-          <Link href={`/mangas/${manga.attributes?.slug}`}>
+          <Link href={`/mangas/${manga?.slug}`}>
             <div className="text-sm font-semibold">
-              {manga.attributes?.name}
+              {manga?.name}
             </div>
           </Link>
         </Tooltip>
 
         <Tooltip label="View mangaka" decreaseY={true}>
           <Link
-            href={`/mangakas/${manga.attributes?.mangaka.data.attributes?.slug}`}
+            href={`/mangakas/${(manga?.mangaka as unknown as Mangaka).slug}`}
           >
-            <div className="text-xs">{`By: ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
+            <div className="text-xs">{`By: ${(manga?.mangaka as unknown as Mangaka).name}`}</div>
           </Link>
         </Tooltip>
 
         <div className="font-semibold text-xs">
-          {manga.attributes?.price ? `$${manga.attributes?.price}` : ""}
+          {manga?.price ? `$${manga?.price}` : ""}
         </div>
         <div className="flex flex-row space-x-2 place-items-center text-siteGray">
           {Array.from(Array(4).keys()).map((_, index) => (
-            <div key={`${manga.attributes?.name}-${index}`}>
+            <div key={`${manga?.name}-${index}`}>
               <StarIcon />
             </div>
           ))}
@@ -76,7 +76,7 @@ export default function MangaItem({ manga }: MangaItemProps) {
       </div>
 
       {/** Buttons */}
-      {manga.attributes?.in_print ? (
+      {manga?.in_print ? (
         <div className="flex flex-row">
           <Tooltip
             label="Add to cart"
@@ -86,8 +86,8 @@ export default function MangaItem({ manga }: MangaItemProps) {
           >
             <motion.button
               layout
-              id={`${manga.attributes.name}-checkout-button`}
-              aria-label={`${manga.attributes.name}-checkout-button`}
+              id={`${manga.name}-checkout-button`}
+              aria-label={`${manga.name}-checkout-button`}
               className="flex w-full h-full bg-siteRed place-content-center place-items-center"
               whileHover={{
                 scale: 1.05,
@@ -113,8 +113,8 @@ export default function MangaItem({ manga }: MangaItemProps) {
             display="flex"
           >
             <motion.button
-              id={`${manga.attributes.name}-bookmark-button`}
-              aria-label={`${manga.attributes.name}-bookmark-button`}
+              id={`${manga.name}-bookmark-button`}
+              aria-label={`${manga.name}-bookmark-button`}
               className="flex w-full h-full bg-siteLightGray place-content-center place-items-center"
               whileHover={{
                 scale: 1.05,
