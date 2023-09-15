@@ -1,5 +1,5 @@
 import { transformImageLink } from "@/lib/custom-functions";
-import { Manga } from "@/lib/types";
+import { Manga, Mangaka } from "@/lib/types";
 import Image from "next/image";
 
 /** Props necessary for this component */
@@ -25,19 +25,19 @@ export default function CartItem({
       <div className="flex flex-row space-x-5 md:space-x-10 place-items-center">
         {/** Manga Cover */}
         <Image
-          src={transformImageLink(manga.attributes?.cloudinary_url ?? "", 80, 128)}
+          src={transformImageLink(manga?.image_url ?? "", 80, 128)}
           className="ml-3 md:ml-5 h-32 w-20"
-          alt={manga.attributes?.image.data.attributes?.alternativeText ?? ""}
+          alt={manga?.name ?? ""}
           height={128}
           width={80}
         />
         {/** Manga Name and Author Name */}
-        <div className="hidden md:flex text-sm font-libreFranklin">{`${manga.attributes?.name} - ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
+        <div className="hidden md:flex text-sm font-libreFranklin">{`${manga?.name} - ${(manga?.mangaka as unknown as Mangaka)?.name}`}</div>
 
         <div className="md:hidden flex flex-col place-items-start gap-y-2">
-          <div className="text-xs font-libreFranklin">{`${manga.attributes?.name} - ${manga.attributes?.mangaka.data.attributes?.name}`}</div>
+          <div className="text-xs font-libreFranklin">{`${manga?.name} - ${(manga?.mangaka as unknown as Mangaka)?.name}`}</div>
           <div className="text-xs font-libreFranklin">{`Quantity: ${quantity}`}</div>
-          <div className="text-xs font-libreFranklin">{`$${manga.attributes?.price}`}</div>
+          <div className="text-xs font-libreFranklin">{`$${manga?.price}`}</div>
         </div>
       </div>
       {/** Spacer */}
@@ -46,7 +46,7 @@ export default function CartItem({
       {/** Manga Quantity and Price */}
       <div className="hidden md:flex md:flex-row md:mr-32 md:space-x-16 md:place-items-center place-items-start">
         <div className="text-sm font-libreFranklin">{`Quantity: ${quantity}`}</div>
-        <div className="text-sm font-libreFranklin">{`$${manga.attributes?.price}`}</div>
+        <div className="text-sm font-libreFranklin">{`$${manga?.price}`}</div>
       </div>
 
       {/** Remove from cart button */}

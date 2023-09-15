@@ -4,10 +4,9 @@ import { useState } from "react";
 import SpotlightOfTheWeekHero from "@/components/SpotlightOfTheWeekHero";
 import SectionDivider from "@/components/Divider";
 import MangaItem from "@/components/MangaItem";
-import qs from "qs";
-import { strapiFetch } from "@/lib/custom-functions";
 import Tooltip from "@/components/Tooltip";
 import HeadComponent from "@/components/HeadComponent";
+import { supabase } from "@/lib/api";
 
 /**
  * Function that will retrieve all (via pagination) manga to display on the home page
@@ -15,32 +14,32 @@ import HeadComponent from "@/components/HeadComponent";
  * @returns Manga data from Strapi
  */
 export async function getServerSideProps() {
-  const query = qs.stringify(
-    {
-      filters: {
-        in_print: {
-          $eq: true,
-        },
-      },
-      populate: ["mangaka", "image"],
-      pagination: {
-        pageSize: 50,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    }
-  );
+  const { data: mangas, error } = await supabase
+    .from("Manga")
+    .select(
+      `
+    *,
+    mangaka (
+      name,
+      slug
+    )
+    `
+    )
+    .eq("in_print", true)
+    .limit(50);
 
-  const response = await strapiFetch(
-    process.env.NEXT_PUBLIC_STRAPI_API_MANGAS_PATH!,
-    query
-  );
-  const mangas = await response.json();
+  if (error) {
+    return {
+      redirect: {
+        destination: "/500",
+      },
+    };
+  }
 
   return {
     props: {
-      mangas: mangas.data as Manga[],
+      mangas: mangas as Manga[],
+      spotlightIndex: Math.floor(Math.random() * (50 - 0) + 0) // Generates a random index
     },
   };
 }
@@ -53,8 +52,9 @@ export async function getServerSideProps() {
  */
 export default function Home({
   mangas,
+  spotlightIndex
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const spotlightOfTheWeekManga: Manga = mangas[12];
+  const spotlightOfTheWeekManga: Manga = mangas[spotlightIndex];
   const filterTags = [
     "Action-Adventure",
     "Comedy",
@@ -130,12 +130,12 @@ export default function Home({
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-y-16 md:gap-x-8 lg:gap-x-14">
             {/** Manga Item */}
             {mangas
-              .filter((manga) => manga.attributes?.in_print == true)
+              .filter((manga) => manga?.in_print == true)
               .filter((manga) => {
                 if (highlightFilter == "New") {
-                  return manga.attributes?.release_date.includes("2023");
+                  return manga.release_date?.includes("2023");
                 } else {
-                  return manga.attributes?.genres.includes(highlightFilter);
+                  return manga?.genres?.includes(highlightFilter);
                 }
               })
               .map((manga) => (

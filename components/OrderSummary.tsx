@@ -32,11 +32,11 @@ export default function OrderSummary({
             {mangas.map((manga) => (
               <div className="flex flex-row" key={manga.id}>
                 <div className="font-libreFranklin text-sm">
-                  {manga.attributes?.name}
+                  {manga?.name}
                 </div>
                 <div className="grow"></div>
                 <div className="font-libreFranklin text-sm">
-                  {`$${manga.attributes?.price}`}
+                  {`$${manga?.price}`}
                 </div>
               </div>
             ))}

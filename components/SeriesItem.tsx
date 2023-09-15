@@ -1,4 +1,4 @@
-import { MangaSeries } from "@/lib/types";
+import { MangaSeries, Mangaka } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import Tooltip from "./Tooltip";
@@ -18,25 +18,25 @@ type SeriesItemProps = {
 export default function SeriesItem({ singleSeries }: SeriesItemProps) {
   return (
     <Link
-      href={`/series/${singleSeries.attributes?.slug}`}
-      key={singleSeries.attributes?.name}
+      href={`/series/${singleSeries?.slug}`}
+      key={singleSeries?.name}
     >
       <div className="flex flex-col w-52 h-112 bg-mangaCard shadow-md">
         <div>
           <Image
-            src={transformImageLink(singleSeries.attributes?.cloudinary_url ?? "", 208, 288)}
+            src={transformImageLink(singleSeries?.first_cover_url ?? "", 208, 288)}
             width={208}
             height={288}
-            alt={`${singleSeries.attributes?.name} First Manga Cover`}
+            alt={`${singleSeries?.name} First Manga Cover`}
           />
           <div className="flex flex-col py-5 text-sm px-2 space-y-2">
             <Tooltip label="View series" decreaseY>
               <div className="text-sm font-semibold">
-                {singleSeries.attributes?.name}
+                {singleSeries?.name}
               </div>
             </Tooltip>
             <Tooltip label="View mangaka" decreaseY>
-              <div className="text-xs">{`By: ${singleSeries.attributes?.mangaka?.data.attributes?.name}`}</div>
+              <div className="text-xs">{`By: ${(singleSeries.mangaka as unknown as Mangaka).name}`}</div>
             </Tooltip>
           </div>
         </div>
